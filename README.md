@@ -13,17 +13,17 @@ python3 -m venv venv
 # windows
 python -m venv venv
 
-# Install
+# mac
+source venv/bin/activate
+# windows
+bin/Scripts/Activate
+
+# Install requirments.txt
 pip install -r requirements.txt
 
 # UPDATE requirements.txt
 pip freeze > requirements.txt 
 
-
-# mac
-source venv/bin/activate
-# windows
-bin/Scripts/Activate
 
 # YOU MUST BE IN VIRTUAL ENVIRONMENT WHENVER DEVELOPING/RUNNING LOCALLY
 

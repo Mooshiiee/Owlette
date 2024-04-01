@@ -7,12 +7,12 @@ app = Flask(__name__)
 #SPLASHPAGE
 @app.route('/')
 def hello():
-    return render_template('index.html', foo=bar)
+    return render_template('index.html')
 
 #LOGIN
 @app.route('/login')
 def login():
-    return render_template('login.html', foo=bar)
+    return render_template('login.html')
 
 #REGISTER
 @app.route('/register')
