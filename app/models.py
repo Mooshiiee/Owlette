@@ -24,9 +24,9 @@ class Event(db.Model):
     eventID = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.Integer(80), db.ForeignKey('user.id'), unique=True)
     title = db.Column(db.String(80))
-    status = db.Column(db.String(80))
+    status = db.Column(db.String(80), default='active')
     description = db.Column(db.String(80))
-    eventTime = db.Column(db.String(80))
+    eventTime = db.Column(db.DateTime)
     location = db.Column(db.String(80))
 
     def __init__(self, name, date, location, description, title, status, eventTime):
@@ -47,7 +47,7 @@ class comment(db.Model):
     userID = db.Column(db.Integer(80), db.ForeignKey('user.id'), unique=True)
     eventID = db.Column(db.Integer(80), db.ForeignKey('event.eventID'), unique=True)
     message = db.Column(db.String(80))
-    timestamp = db.Column(db.String(80))
+    timestamp = db.Column(db.DateTime)
 
     def __init__(self, userID, eventID, comment, time):
         self.userID = userID
@@ -63,7 +63,7 @@ class RSVP(db.Model):
     rsvpID = db.Column(db.Integer, primary_key=True)
     userID = db.Column(db.Integer(80), db.ForeignKey('user.id'), unique=True)
     eventID = db.Column(db.Integer(80), db.ForeignKey('event.eventID'), unique=True)
-    timestamp = db.Column(db.String(80))
+    timestamp = db.Column(db.DateTime)
 
     def __init__(self, userID, eventID, timestamp):
         self.userID = userID
