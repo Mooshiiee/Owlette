@@ -17,7 +17,7 @@ def login():
 #REGISTER
 @app.route('/register')
 def register():
-    return 'register page'
+    return render_template('register.html')
 
 #HOME PAGE
 @app.route('/home')
