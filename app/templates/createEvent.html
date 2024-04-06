@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Event
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Create an Event</h2>
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}  <!-- Include the CSRF token -->
+        
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+                <div class="invalid-feedback">
+                    {{ form.title.errors[0] }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control") }}
+            {% if form.description.errors %}
+                <div class="invalid-feedback">
+                    {{ form.description.errors[0] }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.eventTime.label(class="form-label") }}
+            {{ form.eventTime(class="form-control") }}
+            {% if form.eventTime.errors %}
+                <div class="invalid-feedback">
+                    {{ form.eventTime.errors[0] }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.location.label(class="form-label") }}
+            {{ form.location(class="form-control") }}
+            {% if form.location.errors %}
+                <div class="invalid-feedback">
+                    {{ form.location.errors[0] }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
