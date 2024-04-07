@@ -1,14 +1,14 @@
 # > flask --debug --app app.views run
 from flask import Flask, render_template
-from models import db
+#from models import db
 
 
 def register_routes(app, db):
 
-    @app.route('/testdb')
-    def testdb():
-        events = Event.query.all()
-        return str(events)
+    #@app.route('/testdb')
+    #def testdb():
+        #events = Event.query.all()
+        #return str(events)
 
     #SPLASHPAGE
     @app.route('/')

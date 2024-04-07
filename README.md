@@ -5,17 +5,17 @@ Owlette
 -------------------------------------------------------------
 # Activate Virtual Environment
 
-# CREATE NEW VENV FOR EACH SESSION. UPDATE requirements.txt IF YOU ADD NEW PACKAGES
-# venv is in .gitignore so it should not be in the repository. we keep the dependencies in 
+## CREATE NEW VENV FOR EACH SESSION. UPDATE requirements.txt IF YOU ADD NEW PACKAGES
+## venv is in .gitignore so it should not be in the repository. we keep an updated list of dependencies in requirements.txt.
 
-# mac 
-python3 -m venv venv
-# windows
-python -m venv venv
+## mac 
+> python3 -m venv venv
+## windows
+> python -m venv venv
 
-# mac
+## mac
 source venv/bin/activate
-# windows
+## windows
 bin/Scripts/Activate
 
 # Install requirments.txt
@@ -62,9 +62,12 @@ After merging, you can delete your feature branch both locally and remotely (if 
 git branch -d feature-branch-name
 git push origin --delete feature-branch-name
 
+# HOW TO PULL FROM SPECIFIC BRANCH
+git pull origin <branchname>
+
 # REMEMBER
 Remember to replace feature-branch-name with your actual feature branch name. This workflow helps keep your main branch clean and allows for better collaboration in a team environment.
 
 # USEFUL LINKS
 https://github.com/humiaozuzu/awesome-flask?tab=readme-ov-file#admin-interface
-This is a bumch of useful flask intergrations.
+This is a bumch of useful flask intergrations`

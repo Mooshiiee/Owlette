@@ -3,9 +3,9 @@ from flask import render_template
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./owlettedb.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event
+from models import db
 db.init_app(app)
 
 #ALTERNATIVE FORM WITH views.py and def register_routes(app, db)
@@ -14,8 +14,8 @@ db.init_app(app)
 
 @app.route('/testdb')
 def testdb():
-    events = Event.query.all()
-    return str(events)
+    #events = Event.query.all()
+    return 0
 
 #SPLASHPAGE
 @app.route('/')
