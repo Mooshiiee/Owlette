@@ -1,20 +1,48 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask import render_template
 
-db = SQLAlchemy()
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'changeforprod'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./owlettedb.db'
 
-def create_app():
-    app = Flask(__name__, template_folder='templates')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./owlettedb.db'
+from models import db, User, Event
+db.init_app(app)
 
-    db.init_app(app)
+#ALTERNATIVE FORM WITH views.py and def register_routes(app, db)
+#from views import register_routes
+#register_routes(app, db)
 
-    #import inside the function to avoid circular imports
+@app.route('/testdb')
+def testdb():
+    events = Event.query.all()
+    return str(events)
 
-    from routes import register_routes
-    register_routes(app, db)
+#SPLASHPAGE
+@app.route('/')
+def hello():
+    return render_template('index.html')
 
-    migrate = Migrate(app, db)
+#LOGIN
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
-    return app
+#REGISTER
+@app.route('/register')
+def register():
+    return 'register page'
+
+#HOME PAGE
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+@app.route('/myevents')
+def myevents():
+    return render_template('myevents.html')
+
+
+
+
+
+

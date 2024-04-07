@@ -1,8 +1,6 @@
 # > flask --debug --app app.views run
-
-from app import app
 from flask import Flask, render_template
-from models import User, Event
+from models import db
 
 
 def register_routes(app, db):

@@ -1,7 +1,11 @@
-from app import db
 from flask_login import UserMixin
 from datetime import datetime
 import pytz
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
 
 # class User(db.Model):
 #     __tablename__ = 'users'
@@ -47,6 +51,8 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=datetime.now(pytz.timezone('US/Eastern')))
+    posts = db.relationship('Event', backref='author', lazy='dynamic')
+    comment = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -55,7 +61,7 @@ class User(db.Model, UserMixin):
 class Event(db.Model):
     __tablename__ = 'event'
     eventID = db.Column(db.Integer, primary_key=True)
-    userID = db.Column(db.Integer, db.ForeignKey('user.id'), unique=True)
+    userID = db.Column(db.Integer, db.ForeignKey('user.userid'), unique=True)
     title = db.Column(db.String(80))
     status = db.Column(db.String(80), default='active')
     description = db.Column(db.String(389))
