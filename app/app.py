@@ -1,11 +1,33 @@
-# > flask --debug --app app.views run
+# RUN WITH
+# (in /app directory) 
+# > flask run
 
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask
+from flask import render_template, request, flash, redirect, url_for
+from flask_migrate import Migrate
+
 from .forms import EventForm
 
 app = Flask(__name__)
-## CSRF token needed for working with form. 
-app.config['SECRET_KEY'] = 'dnwadniuadniwd373h22'
+app.config['SECRET_KEY'] = 'changeforprod'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
+
+from models import db, Event, User
+
+
+
+db.init_app(app)
+
+migrate = Migrate(app,db)
+
+#below is snippet for an alternate structure WITH views.py and def register_routes(app, db)
+#from views import register_routes
+#register_routes(app, db)
+
+@app.route('/testdb')
+def testdb():
+    events = Event.query.all()
+    return str(events)
 
 #SPLASHPAGE
 @app.route('/')
@@ -43,7 +65,6 @@ def create_event():
     return render_template('createEvent.html', form=form)
 
 
-if __name__ == '__main__':
-    #DEBUG is SET to TRUE. CHANGE FOR PROD
-    app.run(port=5000,debug=True)
+
+
 
