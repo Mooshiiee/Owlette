@@ -10,9 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, Event, User
-
-
+from models import db, User, Event
 
 db.init_app(app)
 
@@ -24,13 +22,14 @@ migrate = Migrate(app,db)
 
 @app.route('/testdb')
 def testdb():
-    events = Event.query.all()
-    return str(events)
+    dbtest = db.get_or_404(Event, 1)
+    return str(dbtest)
 
 #SPLASHPAGE
 @app.route('/')
 def hello():
-    return render_template('index.html')
+    event = Event.query.all()
+    return render_template('index.html', event=event)
 
 #LOGIN
 @app.route('/login')

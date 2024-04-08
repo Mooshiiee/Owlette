@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-# HOW TO UPDATE DATABASE FILE AFTER CHANGING SCHEMA
 # > flask shell
 # >>>from app import db
 # >>>db.create_all()
@@ -17,6 +16,16 @@ db = SQLAlchemy()
 # >>> db.session.add(newuser)
 # >>> db.session.commit()
 # >>> db.session.close()
+
+# HOW TO UPDATE DATABASE FILE AFTER CHANGING SCHEMA
+# To create a new migration:
+# flask db migrate
+
+# To apply the migration and update the database schema:
+# flask db upgrade
+
+# To downgrade the database schema (optional, if needed):
+# flask db downgrade
 
 class User(db.Model, UserMixin):
     """Model for user accounts."""
