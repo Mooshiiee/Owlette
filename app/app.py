@@ -1,12 +1,22 @@
+# RUN WITH
+# (in /app directory) 
+# > flask run
+
 from flask import Flask
 from flask import render_template
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db
+from models import db, Event, User
+
+
+
 db.init_app(app)
+
+migrate = Migrate(app,db)
 
 #ALTERNATIVE FORM WITH views.py and def register_routes(app, db)
 #from views import register_routes
@@ -14,8 +24,8 @@ db.init_app(app)
 
 @app.route('/testdb')
 def testdb():
-    #events = Event.query.all()
-    return 0
+    events = Event.query.all()
+    return str(events)
 
 #SPLASHPAGE
 @app.route('/')

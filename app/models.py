@@ -6,6 +6,18 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+# HOW TO UPDATE DATABASE FILE AFTER CHANGING SCHEMA
+# > flask shell
+# >>>from app import db
+# >>>db.create_all()
+
+# HOW TO INSERT DATA
+# >>> from app import db, Event, User
+# >>> newuser = User(username='john_doe', email='john@example.com', password='password123', firstname='John', lastname='Doe', bio='Some bio')
+# >>> db.session.add(newuser)
+# >>> db.session.commit()
+# >>> db.session.close()
+
 class User(db.Model, UserMixin):
     """Model for user accounts."""
     __tablename__ = 'user'
@@ -31,8 +43,10 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime,
                            nullable=False,
                            default=datetime.now(pytz.timezone('US/Eastern')))
+    
+    #ADD THESE LATER
     posts = db.relationship('Event', backref='author', lazy='dynamic')
-    comment = db.relationship('Comment', backref='author', lazy='dynamic')
+    #comment = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -42,7 +56,7 @@ class User(db.Model, UserMixin):
 class Event(db.Model):
     __tablename__ = 'event'
     eventID = db.Column(db.Integer, primary_key=True)
-    userID = db.Column(db.Integer, db.ForeignKey('user.userid'), unique=True)
+    userID = db.Column(db.Integer, db.ForeignKey('user.userid'))
     title = db.Column(db.String(80))
     status = db.Column(db.String(80), default='active')
     description = db.Column(db.String(389))
