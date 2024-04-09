@@ -22,6 +22,7 @@
 
       <hr>
       <ul class="nav nav-pills flex-column mb-auto">
+        
         <li class="nav-item">
           <a href="/home" class="nav-link text-white {{ 'active' if request.path == '/home' else '' }}" 
           aria-current="page">
@@ -29,13 +30,15 @@
             Home
           </a>
         </li>
-        <li>
+        
+       <li>
           <a href="/myevents" class="nav-link text-white {{ 'active' if request.path == '/myevents' else '' }}" 
           aria-current="page">
             <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
             My Events
           </a>
         </li>
+        
         <li>
           <a href="/create" class="nav-link text-white {{ 'active' if request.path == '/create' else '' }}" 
           aria-current="page">
