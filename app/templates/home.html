@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<div class="d-flex flex-column flex-grow-1" style="height: 100vh; border: 6px dashed red;" >
+<div class="d-flex flex-column flex-grow-1" style="height: 100vh;" >
 
-  <div class="align-self-stretch bg-primary" style="border: 6px dashed green;">
+  <div class="align-self-stretch bg-primary" style="">
     <p>filters</p>
   </div>
 
 
-  <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh; border: 6px dashed blue;">
+  <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh;">
     
     {% for events in events %}   
     <div class="card m-1 w-75">
