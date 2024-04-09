@@ -32,5 +32,5 @@ jobs:
         pip install -r requirments.txt
         cd app/
         flask run --host=0.0.0.0
-        exit
+        exit 1
 
