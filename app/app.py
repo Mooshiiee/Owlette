@@ -27,9 +27,8 @@ def testdb():
 
 #SPLASHPAGE
 @app.route('/')
-def hello():
-    event = Event.query.all()
-    return render_template('index.html', event=event)
+def index():
+    return render_template('index.html')
 
 #LOGIN
 @app.route('/login')
@@ -44,7 +43,8 @@ def register():
 #HOME PAGE
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    events = Event.query.all()
+    return render_template('home.html', events=events)
 
 @app.route('/myevents')
 def myevents():
