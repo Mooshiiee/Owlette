@@ -6,7 +6,7 @@ from flask import Flask
 from flask import render_template, request, flash, redirect, url_for
 from flask_migrate import Migrate
 
-from .forms import EventForm
+from forms import EventForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
