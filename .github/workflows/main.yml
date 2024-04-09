@@ -21,7 +21,6 @@ jobs:
     - name: Install Flask
       run: |
         pip install Flask
-        pip install Flask-Migrate
 
     - name: Navigate to app directory
       run: |
@@ -30,6 +29,7 @@ jobs:
         
     - name: Run Flask
       run: |
+        pip install -r requirments.txt
         cd app/
         flask run --host=0.0.0.0
 
