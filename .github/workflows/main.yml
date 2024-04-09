@@ -32,5 +32,9 @@ jobs:
         pip install -r requirments.txt
         cd app/
         flask run --host=0.0.0.0
-        exit 1
+
+    - name: Stop Flask
+      if: always()
+      run: |
+        pkill -INT -f 'flask run --host=0.0.0.0'
 
