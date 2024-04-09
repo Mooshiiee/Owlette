@@ -1,8 +1,14 @@
 # > flask --debug --app app.views run
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
+from flask_bootstrap import Bootstrap
+from app.forms import loginForm, registerForm, EventForm
+#from app.models import User, Event
 
 app = Flask(__name__)
+Bootstrap(app)
+
+app.config['SECRET_KEY'] ='owl'
 
 #SPLASHPAGE
 @app.route('/')
@@ -10,9 +16,22 @@ def hello():
     return render_template('index.html')
 
 #LOGIN
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = loginForm()
+    '''if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+
+        user = User(email=email, password=password)
+
+        db.session.add(user)
+        db.session.commit()
+
+        form.email.data = ''
+        form.password.data = ''
+        return redirect(url_for('login'))'''
+    return render_template('login.html', form=form)
 
 #REGISTER
 @app.route('/register')

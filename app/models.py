@@ -1,4 +1,4 @@
-from app import db
+'''from app import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -86,4 +86,4 @@ class Flair(db.Model):
         self.name = name
     
     def __repr__(self):
-        return '<Flair %r>' % self.name
+        return '<Flair %r>' % self.name'''
