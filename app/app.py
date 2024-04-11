@@ -54,6 +54,12 @@ def home():
 def myevents():
     return render_template('myevents.html')
 
+@app.route('/eventview/<int:eventID>')
+def eventdetailview(eventID):
+    #gets entry from primarky key value
+    singleEvent = Event.query.get(eventID)
+    return render_template("eventdetailview.html", singleEvent = singleEvent)
+
 @app.route('/create-event', methods=['GET', 'POST'])
 def create_event():
     print("Handling a request to the create-event route...")
