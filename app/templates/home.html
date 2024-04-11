@@ -19,7 +19,7 @@
         <h5 class="card-title">{{events.title}}</h5>
         <p class="card-text">{{events.description}}</p>
         <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
+        <a href="/eventview/{{events.eventID}}" class="btn btn-primary stretched-link">Show More</a>
       </div>
     </div>
     {% endfor %}
