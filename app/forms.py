@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Length
 
 class loginForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField('Username', validators=[DataRequired(),  Length(max=80)])
+    email = StringField('Email', validators=[DataRequired(),  Length(max=80)])
     password = StringField('Password', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField('Login')
 
