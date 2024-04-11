@@ -1,0 +1,40 @@
+name: CI/CD for Flask App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Flask
+      run: |
+        pip install Flask
+
+    - name: Navigate to app directory
+      run: |
+        cd app/
+        pwd
+        
+    - name: Run Flask
+      run: |
+        pip install -r requirments.txt
+        cd app/
+        flask run --host=0.0.0.0
+
+    - name: Stop Flask
+      if: always()
+      run: |
+        pkill -INT -f 'flask run --host=0.0.0.0'
+

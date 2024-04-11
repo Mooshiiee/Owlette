@@ -23,7 +23,7 @@ def register_routes(app, db):
     #REGISTER
     @app.route('/register')
     def register():
-        return 'register page'
+        return render_template('registeration.html')
 
     #HOME PAGE
     @app.route('/home')
