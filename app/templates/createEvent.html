@@ -31,8 +31,8 @@ Create Event
         </div>
 
         <div class="mb-3">
-            {{ form.eventTime.label(class="form-label") }}
-            {{ form.eventTime(class="form-control") }}
+            {{ form.eventTime.label }}
+            {{ form.eventTime(class="datepicker") }}
             {% if form.eventTime.errors %}
                 <div class="invalid-feedback">
                     {{ form.eventTime.errors[0] }}
@@ -41,8 +41,8 @@ Create Event
         </div>
 
         <div class="mb-3">
-            {{ form.location.label(class="form-label") }}
-            {{ form.location(class="form-control") }}
+            {{ form.location.label }}
+            {{ form.location }}
             {% if form.location.errors %}
                 <div class="invalid-feedback">
                     {{ form.location.errors[0] }}
