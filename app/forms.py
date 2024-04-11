@@ -22,7 +22,7 @@ class registerForm(FlaskForm):
 ## This is for creating a post/event
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=80)])
-    status = StringField('Status', validators=[DataRequired(), Length(max=80)])
+    status = StringField('Status', validators=[Length(max=80)]) ## STATUS NOT REQUIRED. ASSUMED EVENT IS ACTIVE UNTILL CANCELD
     description = TextAreaField('Description', validators=[DataRequired(), Length(max=255)])  # Textarea for longer input
     eventTime = DateTimeLocalField('Event Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])  
     location = StringField('Location', validators=[DataRequired(), Length(max=80)])

@@ -25,7 +25,9 @@ migrate = Migrate(app,db)
 @app.route('/testdb')
 def testdb():
     dbtest = db.get_or_404(Event, 1)
-    return str(dbtest)
+    event = Event.query.get(1)
+    print(event)
+    return f"<h1>('Event: ' + {str(event)})</h1>"
 
 #SPLASHPAGE
 @app.route('/')
@@ -54,16 +56,38 @@ def myevents():
 
 @app.route('/create-event', methods=['GET', 'POST'])
 def create_event():
+    print("Handling a request to the create-event route...")
     form = EventForm(request.form)
-    if request.method == 'POST' and form.validate():
 
-        # ADD LOGIC TO SAVE TO DATABASE HERE, WHEN COMPLETED
+    if request.method == 'POST':
+        for fieldName, fieldObject in form._fields.items():
+            print(f"Field Name: {fieldName}, Field Value: {fieldObject.data}, Errors: {fieldObject.errors}")
 
-        flash('Event created successfully!', 'success')
+    if form.validate_on_submit():
+        print("Form validated.")
+        #### temp user for now, need user id to post ## CHANGE WHEN LOGIN AND REGISTER IS DONE
+        temp_user_id = 1  
+        try:
+            new_event = Event(
+                userID=temp_user_id,
+                title=form.title.data,
+                description=form.description.data,
+                eventTime=form.eventTime.data,
+            )
+            db.session.add(new_event)
+            db.session.commit()
+            print('Event created successfully!')
+            flash('Event created successfully!', 'success')
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            db.session.rollback() ## REVERT CHANGES IF ERROR
+            flash('Error creating event.', 'error')
         return redirect(url_for('home'))
+    else:
+        print("Form not validated.")
+        print(form.errors)  # Log form errors to help diagnose validation failures
+
     return render_template('createEvent.html', form=form)
 
-
-
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
