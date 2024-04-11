@@ -73,6 +73,7 @@ def create_event():
                 title=form.title.data,
                 description=form.description.data,
                 eventTime=form.eventTime.data,
+                location=form.location.data
             )
             db.session.add(new_event)
             db.session.commit()
