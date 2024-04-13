@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app
-from flask_bootstrap import Bootstrap
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import EventForm, loginForm
@@ -16,8 +15,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def load_user(userid):
+    return User.query.get(int(userid))
 
 migrate = Migrate(app, db)
 
@@ -32,11 +31,6 @@ def index():
     return render_template('index.html')
 
 # LOGIN
-
-@app.route('/testuser')
-def testuser():
-    test = db.get_or_404(User, 2)
-    return str(test)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -64,6 +58,10 @@ def login():
 
     return render_template('login.html', form=form)
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 # REGISTER
 @app.route('/register')
 def register():

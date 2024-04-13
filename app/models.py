@@ -53,6 +53,8 @@ class User(db.Model, UserMixin):
                            nullable=False,
                            default=datetime.now(pytz.timezone('US/Eastern')))
     
+    def get_id(self):
+            return (self.userid)
     #ADD THESE LATER
     posts = db.relationship('Event', backref='author', lazy='dynamic')
     #comment = db.relationship('Comment', backref='author', lazy='dynamic')
