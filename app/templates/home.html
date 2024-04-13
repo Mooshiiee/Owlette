@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="d-flex flex-column flex-grow-1" style="height: 100vh;" >
+<div class="d-flex flex-column flex-grow-1 bg-dark" style="height: 100vh;" >
 
   <div class="align-self-stretch bg-primary" style="">
     <p>filters</p>
@@ -12,9 +12,8 @@
 
 
   <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh;">
-    
     {% for events in events %}   
-    <div class="card m-1 w-75">
+    <div class="card m-1 w-75 ms-1">
       <div class="card-body">
         <h5 class="card-title">{{events.title}}</h5>
         <p class="card-text">{{events.description}}</p>
