@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event
+from models import db, User, Event, Flair
 
 db.init_app(app)
 
@@ -83,6 +83,35 @@ def create_event():
             )
             db.session.add(new_event)
             db.session.commit()
+            
+            #grab the primary key of the event that was just created
+            event_id = new_event.id
+            #check how many flairs there are 
+            if form.flair1.data:
+                flairone = form.flair2.data
+            else:
+                flairone = None
+
+            if form.flair2.data:
+                flairtwo = form.flair2.data
+            else:
+                flairtwo = None
+
+            if form.flair3.data:
+                flairthree = form.flair3.data
+            else:
+                flairthree = None
+            #create flair object 
+            flair = Flair(
+                eventID = event_id,
+                flairone = form.flair1.data,
+                flairtwo = form.flair2.data,
+                flairthree = form.flair3.data
+            )
+            db.session.add(flair)
+            db.session.commit()
+            db.session.close()
+
             print('Event created successfully!')
             flash('Event created successfully!', 'success')
         except Exception as e:
