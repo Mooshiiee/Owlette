@@ -27,6 +27,11 @@ db = SQLAlchemy()
 # To downgrade the database schema (optional, if needed):
 # flask db downgrade
 
+flair_event_association = db.Table('flair_event_association',
+    db.Column('event_id', db.Integer, db.ForeignKey('event.eventID'), primary_key=True),
+    db.Column('flair_id', db.Integer, db.ForeignKey('flair.flairID'), primary_key=True)
+)
+
 class User(db.Model, UserMixin):
     """Model for user accounts."""
     __tablename__ = 'user'
@@ -71,6 +76,8 @@ class Event(db.Model):
     description = db.Column(db.String(389))
     eventTime = db.Column(db.DateTime)
     location = db.Column(db.String(80))
+    flairs = db.relationship('Flair', secondary=flair_event_association, back_populates="events")
+
 
     def __repr__(self):
         return '<Event %r>' % self.title
@@ -79,10 +86,8 @@ class Event(db.Model):
 class Flair(db.Model):
     __tablename__ = 'flair'
     flairID = db.Column(db.Integer, primary_key=True)
-    eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'), unique=True)
-    flairone = db.Column(db.String(80))
-    flairtwo = db.Column(db.String(80))
-    flarirthree = db.Column(db.String(80))
+    name = db.Column(db.String(80))  # This will store names like "Sports", "Party", "Computer Science"
+    events = db.relationship('Event', secondary=flair_event_association, back_populates="flairs")
 
     def __repr__(self):
         return '<Flair %r>' % self.flairID
