@@ -79,6 +79,8 @@ class Event(db.Model):
     flairs = db.relationship('Flair', secondary=flair_event_association, back_populates="events")
 
 
+    
+
     def __repr__(self):
         return '<Event %r>' % self.title
 

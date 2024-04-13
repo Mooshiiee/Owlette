@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event
+from models import db, User, Event, Flair
 
 db.init_app(app)
 
@@ -58,19 +58,21 @@ def myevents():
 def eventdetailview(eventID):
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
-    return render_template("eventdetailview.html", singleEvent = singleEvent)
+    flairs = [flair.name for flair in singleEvent.flairs]  # Retrieve the flairs for the event
+    return render_template("eventdetailview.html", singleEvent=singleEvent, flairs=flairs)
 
 @app.route('/create-event', methods=['GET', 'POST'])
 def create_event():
-    print("Handling a request to the create-event route...")
-    form = EventForm(request.form)
 
+    form = EventForm(request.form)
+    form.flair.choices = [(flair.flairID, flair.name) for flair in Flair.query.all()]
     if request.method == 'POST':
         for fieldName, fieldObject in form._fields.items():
             print(f"Field Name: {fieldName}, Field Value: {fieldObject.data}, Errors: {fieldObject.errors}")
 
+   
     if form.validate_on_submit():
-        print("Form validated.")
+
         #### temp user for now, need user id to post ## CHANGE WHEN LOGIN AND REGISTER IS DONE
         temp_user_id = 1  
         try:
@@ -79,10 +81,23 @@ def create_event():
                 title=form.title.data,
                 description=form.description.data,
                 eventTime=form.eventTime.data,
-                location=form.location.data
+                location=form.location.data,
+
             )
             db.session.add(new_event)
+            db.session.flush()
+            selected_flairs = form.flair.data  # This will be a list of selected flair IDs
+            print(selected_flairs)
+            for flair_id in selected_flairs:
+                flair = Flair.query.get(flair_id)
+                if flair:
+                    new_event.flairs.append(flair)
+
+            
+          
             db.session.commit()
+            db.session.close()
+
             print('Event created successfully!')
             flash('Event created successfully!', 'success')
         except Exception as e:

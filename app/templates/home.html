@@ -2,26 +2,51 @@
   
 {% block title %}Home{% endblock %}
 
+
+
 {% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#searchInput").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $("#eventList li").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+  });
+</script>
 
 <div class="d-flex flex-column flex-grow-1 bg-dark" style="height: 100vh;" >
 
-  <div class="align-self-stretch bg-primary" style="">
-    <p>filters</p>
+  <div class="align-self-stretch bg-primary">
+
+    <div class="input-group input-group-sm mx-1 my-1 w-25">
+      <input id="searchInput" type="text" placeholder="Search.." class="form-control">
+    </div>
+
   </div>
 
 
   <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh;">
-    {% for events in events %}   
-    <div class="card m-1 w-75 ms-1">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="/eventview/{{events.eventID}}" class="btn btn-primary stretched-link">Show More</a>
-      </div>
-    </div>
-    {% endfor %}
+
+    <ul id=eventList class="list-group list-group-flush borderless">
+      {% for events in events %}
+      <li class="list-group-item border-bottom-0 bg-dark">
+        <div class="card m-1 w-75 ms-1">
+          <div class="card-body">
+            <h5 class="card-title">{{events.title}}</h5>
+            <p class="card-text">{{events.description}}</p>
+            <span class="badge text-bg-primary rounded-pill">{{ events.eventTime.strftime('%B %d, %Y') }}</span>
+            <span class="badge text-bg-success rounded-pill">{{ events.eventTime.strftime('%I:%M %p') }}</span>
+            <p>{{events.location}}</p>
+            <a href="/eventview/{{events.eventID}}" class="btn btn-primary stretched-link">Show More</a>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
 
     <div class="card m-1 w-75">
       <div class="card-body">
