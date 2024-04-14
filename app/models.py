@@ -74,6 +74,8 @@ class Event(db.Model):
     eventTime = db.Column(db.DateTime)
     location = db.Column(db.String(80))
 
+    flairs = db.relationship('Flair', backref='event', lazy='immediate')
+
     def __repr__(self):
         return '<Event %r>' % self.title
 
