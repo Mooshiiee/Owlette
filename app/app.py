@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, current_app
+from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import EventForm, loginForm
@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event
+from models import db, User, Event, Flair
 
 db.init_app(app)
 login_manager = LoginManager()
@@ -47,18 +47,17 @@ def login():
         current_app.logger.info('Form submitted successfully')  # Add this line for debugging
 
         user = User.query.filter_by(email=form.email.data).first()
-        current_app.logger.info(user)  # Add this line for debugging
 
-        if user and user.password == form.password.data:
+        if user and user.password == form.password.data and user.email == form.email.data:
+            session['userID'] = user.userid
+            session['firstName'] = user.firstname
+            current_app.logger.info(user.firstname)  # Add this line for debugging
+
             login_user(user)
-            flash('Login successful!', 'success')
-            current_app.logger.info('login works')  # Add this line for debugging
-
             return redirect(url_for('home')) # Change this to the home page
         
         else:
             flash('Login unsuccessful. Please check your credentials.', 'danger')
-            current_app.logger.info('credentials wrong')  # Add this line for debugging
 
     return render_template('login.html', form=form)
 
@@ -73,16 +72,19 @@ def register():
 
 # HOME PAGE
 @app.route('/home')
-#@login_required
+@login_required
 def home():
+
     events = Event.query.all()
     return render_template('home.html', events=events)
 
 @app.route('/myevents')
+@login_required
 def myevents():
     return render_template('myevents.html')
 
 @app.route('/eventview/<int:eventID>')
+@login_required
 def eventdetailview(eventID):
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
@@ -90,6 +92,7 @@ def eventdetailview(eventID):
     return render_template("eventdetailview.html", singleEvent=singleEvent, flairs=flairs)
 
 @app.route('/create-event', methods=['GET', 'POST'])
+@login_required
 def create_event():
 
     form = EventForm(request.form)
