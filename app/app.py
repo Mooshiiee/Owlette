@@ -86,19 +86,21 @@ def myevents():
 def eventdetailview(eventID):
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
-    return render_template("eventdetailview.html", singleEvent = singleEvent)
+    flairs = [flair.name for flair in singleEvent.flairs]  # Retrieve the flairs for the event
+    return render_template("eventdetailview.html", singleEvent=singleEvent, flairs=flairs)
 
 @app.route('/create-event', methods=['GET', 'POST'])
 def create_event():
-    print("Handling a request to the create-event route...")
-    form = EventForm(request.form)
 
+    form = EventForm(request.form)
+    form.flair.choices = [(flair.flairID, flair.name) for flair in Flair.query.all()]
     if request.method == 'POST':
         for fieldName, fieldObject in form._fields.items():
             print(f"Field Name: {fieldName}, Field Value: {fieldObject.data}, Errors: {fieldObject.errors}")
 
+   
     if form.validate_on_submit():
-        print("Form validated.")
+
         #### temp user for now, need user id to post ## CHANGE WHEN LOGIN AND REGISTER IS DONE
         temp_user_id = 1  
         try:
@@ -107,36 +109,20 @@ def create_event():
                 title=form.title.data,
                 description=form.description.data,
                 eventTime=form.eventTime.data,
-                location=form.location.data
+                location=form.location.data,
+
             )
             db.session.add(new_event)
-            db.session.commit()
+            db.session.flush()
+            selected_flairs = form.flair.data  # This will be a list of selected flair IDs
+            print(selected_flairs)
+            for flair_id in selected_flairs:
+                flair = Flair.query.get(flair_id)
+                if flair:
+                    new_event.flairs.append(flair)
+
             
-            #grab the primary key of the event that was just created
-            event_id = new_event.id
-            #check how many flairs there are 
-            if form.flair1.data:
-                flairone = form.flair2.data
-            else:
-                flairone = None
-
-            if form.flair2.data:
-                flairtwo = form.flair2.data
-            else:
-                flairtwo = None
-
-            if form.flair3.data:
-                flairthree = form.flair3.data
-            else:
-                flairthree = None
-            #create flair object 
-            flair = Flair(
-                eventID = event_id,
-                flairone = form.flair1.data,
-                flairtwo = form.flair2.data,
-                flairthree = form.flair3.data
-            )
-            db.session.add(flair)
+          
             db.session.commit()
             db.session.close()
 

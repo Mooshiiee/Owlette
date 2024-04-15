@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}
+<script>
+    // JavaScript to limit the number of selections
+    document.addEventListener('DOMContentLoaded', function () {
+        let select = document.getElementById('flair');
+        select.addEventListener('change', function () {
+            let selectedOptions = [...this.options].filter(option => option.selected);
+            if (selectedOptions.length > 3) {
+                selectedOptions[0].selected = false;
+            }
+        });
+    });
+    </script>
 Create Event
 {% endblock %}
 
@@ -49,7 +61,16 @@ Create Event
                 </div>
             {% endif %}
         </div>
-
+        <label for="flair">Flairs</label>
+        <div class="form-group" style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+            
+            {% for id, name in form.flair.choices %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="flair" value="{{ id }}" id="flair{{ id }}">
+                <label class="form-check-label" for="flair{{ id }}">{{ name }}</label>
+            </div>
+            {% endfor %}
+        </div>
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
         </div>

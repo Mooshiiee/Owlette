@@ -13,6 +13,13 @@
             <p class="card-text">{{singleEvent.description}}</p>
             <p class="card-text"><strong>Location:</strong> {{singleEvent.location}}</p>
             <p class="card-text"><strong>Time:</strong> {{singleEvent.eventTime}}</p>
+
+            <!-- this is showcasing flairs, need to make it look nicer  -->
+            {% if flairs %}
+            <p><strong>Flairs:</strong> {{ flairs|join(", ") }}</p>
+            {% else %}
+            <p><strong>Flairs:</strong> None</p>
+            {% endif %}
             <div class="btn-group" role="group" aria-label="Event Actions">
               <button type="button" class="btn btn-primary"><i class="fas fa-thumbs-up"></i> Like</button>
               <button type="button" class="btn btn-success"><i class="fas fa-calendar-check"></i> RSVP</button>
