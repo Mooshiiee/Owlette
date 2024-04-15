@@ -43,12 +43,13 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     print('rendering')
-    form = registerForm()
-    if request.method == 'POST':
+    form = registerForm()  # Create an instance of the registerForm
+    if form.validate_on_submit():
         # Process the form data here
-        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+        role = request.form['role']
+        name = request.form['full name']
 
         # Perform registration logic here
         # For example, store the user in a database
@@ -56,7 +57,7 @@ def register():
         # Redirect to a success page or render a success template
         return redirect(url_for('success'))
 
-    return render_template('register.html')
+    return render_template('register.html', form=form)
 
 
 #HOME PAGE
