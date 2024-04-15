@@ -40,9 +40,23 @@ def login():
     return render_template('login.html')
 
 #REGISTER
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return 'register page'
+    print('rendering')
+    if request.method == 'POST':
+        # Process the form data here
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        # Perform registration logic here
+        # For example, store the user in a database
+
+        # Redirect to a success page or render a success template
+        return redirect(url_for('success'))
+
+    return render_template('register.html')
+
 
 #HOME PAGE
 @app.route('/home')
