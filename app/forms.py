@@ -8,15 +8,6 @@ class loginForm(FlaskForm):
     submit = SubmitField(label='Login')
 
 
-class registerForm(FlaskForm):
-    # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField(label='Southern Email', validators=[InputRequired(), Email()])
-    username = StringField(label='username', validators=[DataRequired(), Length(max=80)])
-    password = StringField('Password', validators=[DataRequired(), Length(max=80)])
-    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
-    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
-    submit = SubmitField(label='Register')
-
 
 ## This is for creating a post/event
 class EventForm(FlaskForm):
@@ -26,3 +17,31 @@ class EventForm(FlaskForm):
     eventTime = DateTimeLocalField('Event Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])  
     location = StringField('Location', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField('Create Event')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#class registerForm(FlaskForm):
+#    # Assuming userID is the id of the user creating the event, it's not a form field
+#    email = StringField(label='Southern Email', validators=[InputRequired(), Email()])
+#    username = StringField(label='username', validators=[DataRequired(), Length(max=80)])
+#    password = StringField('Password', validators=[DataRequired(), Length(max=80)])
+#    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
+#    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
+#    submit = SubmitField(label='Register')
