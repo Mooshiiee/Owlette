@@ -44,9 +44,9 @@ def login():
 
 class registerForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField(label='email', validators=[DataRequired(), Length(max=80)])
-    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
-    password = PasswordField('New Password', validators=[DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
+    email = StringField(label='Email', validators=[DataRequired(), Length(max=80)])
+    username = StringField(label='Username', validators=[DataRequired(), Length(max=80)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password')
     role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
     name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
@@ -61,7 +61,7 @@ def register():
         # Process the form data here
         # Perform registration logic here
         # Redirect to a success page or render a success template
-        return redirect(url_for('/login'))
+        return redirect(url_for('login'))
 
     return render_template('register.html', form=rform)
 
