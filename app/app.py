@@ -42,16 +42,15 @@ def index():
 def login():
     return render_template('login.html')
 
-#class registerForm(FlaskForm):
-#    # Assuming userID is the id of the user creating the event, it's not a form field
-#    email = StringField(label='Southern Email', validators=[DataRequired(), Email()])
-#    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
-#    password = PasswordField('Password', validators=[DataRequired()])
-#   confirm_password = PasswordField('Confirm Password', validators.EqualTo(password))
-#    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
-#    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
-#    submit = SubmitField(label='Register')
-
+class registerForm(FlaskForm):
+    # Assuming userID is the id of the user creating the event, it's not a form field
+    email = StringField(label='email', validators=[DataRequired(), Length(max=80)])
+    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
+    password = PasswordField('New Password', validators=[DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
+    confirm_password = PasswordField('Confirm Password')
+    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
+    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
+    submit = SubmitField(label='Register')
 
 #REGISTER
 @app.route('/register', methods=['GET', 'POST'])
@@ -61,8 +60,6 @@ def register():
     if rform.validate_on_submit():
         # Process the form data here
         # Perform registration logic here
-        # For example, store the user in a database
-
         # Redirect to a success page or render a success template
         return redirect(url_for('/login'))
 

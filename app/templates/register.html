@@ -31,13 +31,6 @@
             {% endfor %}
         </p>
         <p>
-            {{ form.confirm_password.label }}<br>
-            {{ form.confirm_password(size=32) }}<br>
-            {% for error in form.confirm_password.errors %}
-                <span style="color: red;">{{ error }}</span><br>
-            {% endfor %}
-        </p>
-        <p>
             {{ form.role.label }}<br>
             {{ form.role(size=32) }}<br>
             {% for error in form.role.errors %}
