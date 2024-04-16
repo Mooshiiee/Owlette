@@ -91,11 +91,24 @@ def register():
     print('rendering')
     rform = registerForm()  # Create an instance of the registerForm
     if rform.validate_on_submit():
-        # Process the form data here
-        # Perform registration logic here
-        # Redirect to a success page or render a success template
-        db.session.add(rform)
+        # Check if email is from "@southernct.edu" domain
+        if not rform.email.data.endswith('@southernct.edu'):
+            flash('You must register with a Southern Connecticut State University email address.')
+            return redirect(url_for('register'))
+
+        # Create a User object
+        user = User(
+            email=rform.email.data,
+            username=rform.username.data,
+            firstname=rform.firstname.data,
+            lastname=rform.lastname.data,
+            password=rform.password.data
+        )
+        # Save the user to the database
+        db.session.add(user)
         db.session.commit()
+
+        # Redirect to a success page or render a success template
         return redirect(url_for('home'))
 
     return render_template('register.html', form=rform)
