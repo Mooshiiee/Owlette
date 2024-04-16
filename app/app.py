@@ -58,58 +58,58 @@ def myevents():
 def eventdetailview(eventID):
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
-    flairs = [flair.name for flair in singleEvent.flairs]  # Retrieve the flairs for the event
-    return render_template("eventdetailview.html", singleEvent=singleEvent, flairs=flairs)
+    print(singleEvent)
+    flairName = singleEvent.flairone.name if singleEvent.flairone else "None"  # Retrieve the flairs for the event
+    return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName)
 
 @app.route('/create-event', methods=['GET', 'POST'])
 def create_event():
-
     form = EventForm(request.form)
-    form.flair.choices = [(flair.flairID, flair.name) for flair in Flair.query.all()]
+
+    form.flair.choices = [(0, 'None')] + [(flair.flairID, flair.name) for flair in Flair.query.all()]
     if request.method == 'POST':
-        for fieldName, fieldObject in form._fields.items():
-            print(f"Field Name: {fieldName}, Field Value: {fieldObject.data}, Errors: {fieldObject.errors}")
+        print("Form submitted")  # Debug statement
+        if form.validate_on_submit():
+            print("Form validated successfully")  # Debug statement
 
-   
-    if form.validate_on_submit():
+            # Temporary user ID for now, replace with actual user ID when login is implemented
+            temp_user_id = 1  
 
-        #### temp user for now, need user id to post ## CHANGE WHEN LOGIN AND REGISTER IS DONE
-        temp_user_id = 1  
-        try:
-            new_event = Event(
-                userID=temp_user_id,
-                title=form.title.data,
-                description=form.description.data,
-                eventTime=form.eventTime.data,
-                location=form.location.data,
+            try:
+                # Create a new event instance
+                new_event = Event(
+                    userID=temp_user_id,
+                    title=form.title.data,
+                    description=form.description.data,
+                    eventTime=form.eventTime.data,
+                    location=form.location.data,
+                    flairone_id=form.flair.data if form.flair.data else None
+                )
 
-            )
-            db.session.add(new_event)
-            db.session.flush()
-            selected_flairs = form.flair.data  # This will be a list of selected flair IDs
-            print(selected_flairs)
-            for flair_id in selected_flairs:
-                flair = Flair.query.get(flair_id)
-                if flair:
-                    new_event.flairs.append(flair)
+                # Add the new event to the database
+                db.session.add(new_event)
+                db.session.flush()  # Flush to ensure new_event gets an ID
 
-            
-          
-            db.session.commit()
-            db.session.close()
 
-            print('Event created successfully!')
-            flash('Event created successfully!', 'success')
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            db.session.rollback() ## REVERT CHANGES IF ERROR
-            flash('Error creating event.', 'error')
-        return redirect(url_for('home'))
+                # Commit changes to the database
+                db.session.commit()
+                print('Event created successfully!')  # Debug statement
+                flash('Event created successfully!', 'success')
+            except Exception as e:
+                # Handle errors
+                print(f"An error occurred: {e}")  # Debug statement
+                db.session.rollback()
+                flash('Error creating event.', 'error')
+            return redirect(url_for('home'))
+        else:
+            print("Form not validated.")  # Debug statement
+            print(f"Form Errors: {form.errors}")  # Log form errors to help diagnose validation failures
     else:
-        print("Form not validated.")
-        print(form.errors)  # Log form errors to help diagnose validation failures
+        print("Form not submitted via POST")  # Debug statement
 
-    return render_template('createEvent.html', form=form)
+    return render_template('createEvent.html', form=form, flair=form.flair.choices)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

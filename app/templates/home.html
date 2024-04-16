@@ -40,6 +40,10 @@
             <p class="card-text">{{events.description}}</p>
             <span class="badge text-bg-primary rounded-pill">{{ events.eventTime.strftime('%B %d, %Y') }}</span>
             <span class="badge text-bg-success rounded-pill">{{ events.eventTime.strftime('%I:%M %p') }}</span>
+            <!-- Showcase flair if it exists -->
+            {% if events.flairone %}
+            <span class="badge text-bg-primary rounded-pill">{{ events.flairone.name }}</span>
+            {% endif %}
             <p>{{events.location}}</p>
             <a href="/eventview/{{events.eventID}}" class="btn btn-primary stretched-link">Show More</a>
           </div>
