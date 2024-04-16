@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
-from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import EventForm, loginForm, registerForm
 from models import db, User, Event
+from flask_migrate import Migrate
 
 #flask --app app.py --debug run
 
@@ -73,10 +73,8 @@ def register():
     print('rendering')
     rform = registerForm(request.form)  # Create an instance of the registerForm
     if  request.method == 'POST' and rform.validate_on_submit():
-        print('rform.validate_on_submit()')
         # Check if email is from "@southernct.edu" domain
         if not rform.email.data.endswith('@southernct.edu'):
-            print('rform.email.data.endswith(southernct.edu), it should flash after this')
             flash('You must register with a Southern Connecticut State University email address.')
             return redirect(url_for('register'))
 
@@ -91,7 +89,6 @@ def register():
         # Save the user to the database
         db.session.add(user)
         db.session.commit()
-        print('session add and commit, should redirect after this')
         # Redirect to a success page or render a success template
         return redirect(url_for('login'))
 

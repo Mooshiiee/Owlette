@@ -4,14 +4,16 @@
   
     </style>
 </head>
-{% for message in  get_flashed_messages() %}
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  {{ message }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button> 
-</div>
-{% endfor %}
+{% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                {% for message in messages %}
+                                <p></p>
+                                <li class='text-red'>{{ message }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {% endwith %}
 {% block content %}
 <body class="bg-info-subtle text-info-emphasis">
 <div style="min-height: 100vh;">
