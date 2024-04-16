@@ -44,11 +44,11 @@ def login():
 
 class registerForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField(label='Email', validators=[DataRequired(), Length(max=80)])
+    email = StringField(label='Email', validators=[DataRequired(), Length(max=80), Email()])
     username = StringField(label='Username', validators=[DataRequired(), Length(max=80)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField('Confirm Password')
-    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
+    role = StringField(label='Role', validators=[DataRequired(), Length(max=80), ])
     name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField(label='Register')
 
@@ -61,7 +61,9 @@ def register():
         # Process the form data here
         # Perform registration logic here
         # Redirect to a success page or render a success template
-        return redirect(url_for('login'))
+        db.session.add(rform)
+        db.session.commit()
+        return redirect(url_for('home'))
 
     return render_template('register.html', form=rform)
 
