@@ -1,8 +1,13 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_migrate import Migrate
+from flask_wtf import FlaskForm
+from wtforms import Form, BooleanField, StringField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, validators
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from forms import EventForm, loginForm
 from models import db, User, Event
+from wtforms.validators import DataRequired, Length
+from wtforms.validators import Email, DataRequired
+from forms import EventForm
 
 #flask --app app.py --debug run
 
@@ -36,7 +41,6 @@ def index():
 
 # LOGIN
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -65,10 +69,35 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+
+
+
+class registerForm(FlaskForm):
+    # Assuming userID is the id of the user creating the event, it's not a form field
+    email = StringField(label='Email', validators=[DataRequired(), Length(max=80)])
+    username = StringField(label='Username', validators=[DataRequired(), Length(max=80)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password')
+    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
+    submit = SubmitField(label='Register')
+
+
+
 # REGISTER
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return 'register page'
+    print('rendering')
+    rform = registerForm()  # Create an instance of the registerForm
+    if rform.validate_on_submit():
+        # Process the form data here
+        # Perform registration logic here
+        # Redirect to a success page or render a success template
+        db.session.add(rform)
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    return render_template('register.html', form=rform)
 
 # HOME PAGE
 @app.route('/home')
