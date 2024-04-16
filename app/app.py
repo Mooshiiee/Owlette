@@ -43,14 +43,15 @@ def login():
     return render_template('login.html')
 
 #class registerForm(FlaskForm):
-    # Assuming userID is the id of the user creating the event, it's not a form field
+#    # Assuming userID is the id of the user creating the event, it's not a form field
 #    email = StringField(label='Southern Email', validators=[DataRequired(), Email()])
 #    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
 #    password = PasswordField('Password', validators=[DataRequired()])
-#    confirm_password = PasswordField('Confirm Password', validators.EqualTo(password), validators=[DataRequired()])
+#   confirm_password = PasswordField('Confirm Password', validators.EqualTo(password))
 #    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
 #    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
 #    submit = SubmitField(label='Register')
+
 
 #REGISTER
 @app.route('/register', methods=['GET', 'POST'])
@@ -59,11 +60,6 @@ def register():
     rform = registerForm()  # Create an instance of the registerForm
     if rform.validate_on_submit():
         # Process the form data here
-        #username = request.rform['username']
-        #password = request.rform['password']
-        #role = request.rform['role']
-        #name = request.rform['full name']
-
         # Perform registration logic here
         # For example, store the user in a database
 

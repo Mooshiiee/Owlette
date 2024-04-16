@@ -7,6 +7,7 @@ class loginForm(FlaskForm):
     password = StringField(label='Password', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField(label='Login')
 
+
 class registerForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
     email = StringField(label='Southern Email', validators=[InputRequired(), Email()])
@@ -14,7 +15,7 @@ class registerForm(FlaskForm):
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
+    confirm_password = PasswordField('Confirm Password', validators=validators.EqualTo(password))
     role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
     name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField(label='Register')
