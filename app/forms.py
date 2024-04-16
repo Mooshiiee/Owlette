@@ -1,22 +1,22 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField
-from wtforms.validators import DataRequired, Length
-
-
+from wtforms import StringField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, validators
+from wtforms.validators import DataRequired, Length, Email, DataRequired, InputRequired
 class loginForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField('Username', validators=[DataRequired(),  Length(max=80)])
-    password = StringField('Password', validators=[DataRequired(), Length(max=80)])
-    submit = SubmitField('Login')
+    email = StringField(label='Email', validators=[DataRequired(),  Length(max=80)])
+    password = StringField(label='Password', validators=[DataRequired(), Length(max=80)])
+    submit = SubmitField(label='Login')
 
 class registerForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField('Email', validators=[DataRequired(), Length(max=80)])
-    password = StringField('Password', validators=[DataRequired(), Length(max=80)])
-    role = StringField('Role', validators=[DataRequired(), Length(max=80)])
-    name = StringField('Name', validators=[DataRequired(), Length(max=80)])
-    submit = SubmitField('Register')
-
+    email = StringField(label='Southern Email', validators=[InputRequired(), Email()])
+    username = StringField(label='username', validators=[DataRequired(), Length(max=80)])
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')])
+    confirm = PasswordField('Repeat Password')
+    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
+    submit = SubmitField(label='Register')
 
 
 ## This is for creating a post/event

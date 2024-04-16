@@ -2,16 +2,14 @@
 # (in /app directory) 
 # > flask run
 
-from flask import Flask
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for, Flask
 from flask_migrate import Migrate
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from wtforms import Form, BooleanField, StringField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, validators
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, validators
 from wtforms.validators import DataRequired, Length
-
-
+from wtforms.validators import Email, DataRequired
 from forms import EventForm, registerForm
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
@@ -44,15 +42,15 @@ def index():
 def login():
     return render_template('login.html')
 
-class registerForm(FlaskForm):
+#class registerForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
-    email = StringField(label='email', validators=[DataRequired(), Length(max=80)])
-    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
-    password = PasswordField('New Password', validators=[DataRequired(), validators.EqualTo('confirm', message='Passwords must match')])
-    confirm_password = PasswordField('Confirm Password')
-    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
-    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
-    submit = SubmitField(label='Register')
+#    email = StringField(label='Southern Email', validators=[DataRequired(), Email()])
+#    username = StringField(label='email', validators=[DataRequired(), Length(max=80)])
+#    password = PasswordField('Password', validators=[DataRequired()])
+#    confirm_password = PasswordField('Confirm Password', validators.EqualTo(password), validators=[DataRequired()])
+#    role = StringField(label='Role', validators=[DataRequired(), Length(max=80)])
+#    name = StringField(label='Name', validators=[DataRequired(), Length(max=80)])
+#    submit = SubmitField(label='Register')
 
 #REGISTER
 @app.route('/register', methods=['GET', 'POST'])
@@ -60,11 +58,6 @@ def register():
     print('rendering')
     rform = registerForm()  # Create an instance of the registerForm
     if rform.validate_on_submit():
-        print(rform.email.data +
-              rform.username.data+
-              rform.password.data+  
-              rform.role.data+
-              rform.role.data)
         # Process the form data here
         #username = request.rform['username']
         #password = request.rform['password']
@@ -75,7 +68,7 @@ def register():
         # For example, store the user in a database
 
         # Redirect to a success page or render a success template
-        return redirect(url_for('success'))
+        return redirect(url_for('/login'))
 
     return render_template('register.html', form=rform)
 
