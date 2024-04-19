@@ -5,8 +5,6 @@ from models import db, User, Event
 from flask_migrate import Migrate
 
 
-#flask --app app.py --debug run
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
