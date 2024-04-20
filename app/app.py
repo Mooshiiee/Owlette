@@ -76,6 +76,12 @@ def register():
             flash('You must register with a Southern Connecticut State University email address.')
             return redirect(url_for('register'))
 
+        # Check if email is already registered
+        existing_user = User.query.filter_by(email=rform.email.data).first()
+        if existing_user:
+            flash('This email address is already registered.')
+            return redirect(url_for('register'))
+
         # Create a User object
         user = User(
             email=rform.email.data,
@@ -104,7 +110,10 @@ def home():
 @app.route('/myevents')
 @login_required
 def myevents():
-    return render_template('myevents.html')
+    currentUserID = session['userID']
+    userEvents = Event.query.filter_by(userID = session['userID'])
+
+    return render_template('myevents.html', userEvents=userEvents)
 
 @app.route('/eventview/<int:eventID>')
 @login_required

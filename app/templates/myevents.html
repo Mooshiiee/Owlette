@@ -6,9 +6,58 @@ My Events
 
 {% block content %}
 
-<div class="d-flex flex-column flex-grow-1" style="height: 100vh;">
-my events
-</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#searchInput").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $("#eventList li").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+  });
+</script>
+
+<div class="d-flex flex-column flex-grow-1 bg-dark" style="height: 100vh;" >
+
+    <div class="align-self-stretch bg-primary">
+  
+      <div class="input-group input-group-sm mx-1 my-1 w-25">
+        <input id="searchInput" type="text" placeholder="Search.." class="form-control">
+      </div>
+  
+    </div>
+
+    <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh;">
+
+    <ul id="eventList" class="list-group list-group-flush borderless">
+        {% if userEvents|length == 0 %}
+        <p>Sorry, you have no events. Go post some!</p>
+        {% endif %}
+        {% for event in userEvents %}
+            <li class="list-group-item border-bottom-0 bg-dark">
+                <div class="card m-1 w-75 ms-1">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text">{{ event.description }}</p>
+                        <span class="badge text-bg-primary rounded-pill">{{ event.eventTime.strftime('%B %d, %Y') }}</span>
+                        <span class="badge text-bg-success rounded-pill">{{ event.eventTime.strftime('%I:%M %p') }}</span>
+                        <!-- Showcase flair if it exists -->
+                        {% if event.flairone %}
+                            <span class="badge text-bg-primary rounded-pill">{{ event.flairone.name }}</span>
+                        {% endif %}
+                        <p>{{ event.location }}</p>
+                        <a href="/eventview/{{ event.eventID }}" class="btn btn-primary stretched-link">Show More</a>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Sorry, you have no events. Go post some!</p>
+ 
+    </div> 
+
 
 {% endblock %}
 
