@@ -5,10 +5,33 @@ My Events
 {% endblock %}
 
 {% block content %}
-
-<div class="d-flex flex-column flex-grow-1" style="height: 100vh;">
-my events
+<div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh; width: 100%;">
+    <ul id="eventList" class="list-group list-group-flush borderless">
+        {% for event in events %}
+        <li class="list-group-item border-bottom-0 bg-dark">
+            <div class="card m-1 w-75 ms-1">
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="card-text">{{ event.description }}</p>
+                    <span class="badge text-bg-primary rounded-pill">{{ event.eventTime.strftime('%B %d, %Y') }}</span>
+                    <span class="badge text-bg-success rounded-pill">{{ event.eventTime.strftime('%I:%M %p') }}</span>
+                    {% if event.flairone %}
+                    <span class="badge text-bg-primary rounded-pill">{{ event.flairone.name }}</span>
+                    {% endif %}
+                    <p>{{ event.location }}</p>
+                    <a href="/eventview/{{ event.eventID }}" class="btn btn-primary stretched-link">Show More</a>
+                </div>
+            </div>
+        </li>
+        {% else %}
+        <li class="list-group-item border-bottom-0 bg-dark">
+            <div class="card m-1 w-75 ms-1">
+                <div class="card-body text-center">
+                    <h5 class="card-title">No events found</h5>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
-
 {% endblock %}
-
