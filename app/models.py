@@ -2,6 +2,7 @@
 from datetime import datetime
 from flask_login import UserMixin
 import pytz
+from sqlalchemy import UniqueConstraint
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -110,10 +111,12 @@ class Flair(db.Model):
 class RSVP(db.Model):
      __tablename__ = 'rsvp'
      rsvpID = db.Column(db.Integer, primary_key=True)
-     userID = db.Column(db.Integer, db.ForeignKey('user.userid'), unique=True)
-     eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'), unique=True)
+     userID = db.Column(db.Integer, db.ForeignKey('user.userid'))
+     eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'))
      timestamp = db.Column(db.DateTime)
+     __table_args__ = (UniqueConstraint('userID', 'eventID', name='unique_rsvp_per_user_event'),)
      
+
      def __repr__(self):
          return '<RSVP %r>' % self.status
 
