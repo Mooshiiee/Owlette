@@ -20,13 +20,22 @@
 
 <div class="d-flex flex-column flex-grow-1 bg-dark" style="height: 100vh;" >
 
-  <div class="align-self-stretch bg-primary">
-
-    <div class="input-group input-group-sm mx-1 my-1 w-25">
-      <input id="searchInput" type="text" placeholder="Search.." class="form-control">
+  <div class="d-flex align-items-center my-1 w-50">
+    <div class="input-group input-group-sm mx-1">
+        <input id="searchInput" type="text" placeholder="Search.." class="form-control">
     </div>
-
-  </div>
+    <form action="/home" method="get" class="input-group input-group-sm mx-1 w-75">
+      <select id="flairFilter" name="flair_filter" class="form-select" onchange="this.form.submit()">
+          <option value="All">All Flairs</option>
+          {% for flair in flairs %}
+          <option value="{{ flair.name }}" {% if request.args.get('flair_filter') == flair.name %}selected{% endif %}>
+              {{ flair.name }}
+          </option>
+          {% endfor %}
+      </select>
+  </form>
+<!-- left here, trying to fix flair filter   -->
+</div>
 
 
   <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh;">
@@ -96,6 +105,25 @@
   <div>
 
 </div>
+
+<script>
+  $(document).ready(function() {
+      // Function to filter events based on search input
+      function filterEvents() {
+          var searchText = $('#searchInput').val().toLowerCase();
+  
+          $("#eventList li").filter(function() {
+              var eventText = $(this).text().toLowerCase();
+              var textMatch = eventText.indexOf(searchText) > -1;
+              $(this).toggle(textMatch); 
+              // console.log("Searching for: " + searchText + " - Found in: " + eventText + " - Match: " + textMatch);   // Debugging
+          });
+      }
+  
+      // Event handler for search input
+      $("#searchInput").on("keyup", filterEvents);
+  });
+  </script>
 {% endblock %}
 
 

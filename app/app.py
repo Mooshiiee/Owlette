@@ -4,6 +4,7 @@ from forms import EventForm, loginForm, registerForm
 from models import db, User, Event
 from flask_migrate import Migrate
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
@@ -97,9 +98,18 @@ def register():
 @app.route('/home')
 @login_required
 def home():
+    flair_filter = request.args.get('flair_filter', 'All')
 
-    events = Event.query.all()
-    return render_template('home.html', events=events)
+    # Fetch flairs for the dropdown
+    flairs = Flair.query.all()
+
+    # Fetch events based on the selected flair
+    if flair_filter == 'All':
+        events = Event.query.all()  # Fetch all events if no specific flair is selected
+    else:
+        # Fetch events based on the selected flair
+        events = Event.query.join(Event.flairone).filter(Flair.name == flair_filter).all()
+    return render_template('home.html', events=events, flairs=flairs)
 
 @app.route('/myevents')
 @login_required
