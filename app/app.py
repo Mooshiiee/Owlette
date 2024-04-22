@@ -114,7 +114,9 @@ def home():
 @app.route('/myevents')
 @login_required
 def myevents():
-    return render_template('myevents.html')
+    print(current_user.userid)
+    user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
+    return render_template('myevents.html', events=user_events)
 
 @app.route('/eventview/<int:eventID>')
 @login_required
