@@ -4,7 +4,6 @@ from forms import EventForm, loginForm, registerForm
 from models import db, User, Event
 from flask_migrate import Migrate
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
