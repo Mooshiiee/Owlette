@@ -17,7 +17,18 @@
             <p><strong>Flair:</strong> {{ flairName }}</p>
             <div class="btn-group" role="group" aria-label="Event Actions">
               <button type="button" class="btn btn-primary"><i class="fas fa-thumbs-up"></i> Like</button>
-              <button type="button" class="btn btn-success"><i class="fas fa-calendar-check"></i> RSVP</button>
+              <form action="{{ url_for('rsvp_to_event', event_id=singleEvent.eventID) }}" method="post">
+                {% if user_has_rsvped %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Cancel RSVP
+                </button>
+                {% else %}
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-calendar-check"></i> RSVP
+                </button>
+                {% endif %}
+            </form>
+            
             </div>
           </div>
         </div>
