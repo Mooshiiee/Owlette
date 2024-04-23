@@ -5,7 +5,15 @@ My Events
 {% endblock %}
 
 {% block content %}
+
+
 <div class="overflow-auto align-self-stretch text-white bg-dark" style="height: 100vh; width: 100%;">
+    <div class="container mt-3">
+        <div class="btn-group" role="group" aria-label="Event Toggle">
+            <button id="postedEventsBtn" type="button" class="btn btn-primary active">Posted Events</button>
+            <button id="rsvpedEventsBtn" type="button" class="btn btn-secondary">RSVPed Events</button>
+        </div>
+    </div>
     <ul id="eventList" class="list-group list-group-flush borderless">
         {% for event in events %}
         <li class="list-group-item border-bottom-0 bg-dark">
@@ -34,4 +42,5 @@ My Events
         {% endfor %}
     </ul>
 </div>
+
 {% endblock %}

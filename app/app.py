@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event, Flair
+from models import db, User, Event, Flair, RSVP
 
 db.init_app(app)
 login_manager = LoginManager()
@@ -122,9 +122,35 @@ def myevents():
 def eventdetailview(eventID):
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
-    print(singleEvent)
     flairName = singleEvent.flairone.name if singleEvent.flairone else "None"  # Retrieve the flairs for the event
-    return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName)
+    user_has_rsvped = RSVP.query.filter_by(userID=current_user.userid, eventID=eventID).first() is not None
+
+    return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, user_has_rsvped=user_has_rsvped)
+
+@app.route('/event/<int:event_id>/rsvp', methods=['POST'])
+
+
+@app.route('/event/<int:event_id>/rsvp', methods=['POST'])
+@login_required
+def rsvp_to_event(event_id):
+    existing_rsvp = RSVP.query.filter_by(userID=current_user.userid, eventID=event_id).first()
+    
+    if existing_rsvp:
+        db.session.delete(existing_rsvp)
+        flash('Your RSVP has been removed.', 'info')
+    else:
+        new_rsvp = RSVP(userID=current_user.userid, eventID=event_id)
+        db.session.add(new_rsvp)
+        flash('Your RSVP has been recorded!', 'success')
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        flash('There was an issue updating your RSVP.', 'danger')
+    
+    return redirect(url_for('eventdetailview', eventID=event_id))
+
 
 @app.route('/create-event', methods=['GET', 'POST'])
 @login_required
