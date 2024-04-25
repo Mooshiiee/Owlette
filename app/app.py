@@ -3,6 +3,8 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from forms import EventForm, loginForm, registerForm, commentForm
 from models import db, User, Event, Comment
 from flask_migrate import Migrate
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
@@ -11,8 +13,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 from models import db, User, Event, Flair, RSVP
 
 db.init_app(app)
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
 
 @login_manager.user_loader
 def load_user(userid):
@@ -32,12 +38,15 @@ def testdb():
 def index():
     return render_template('index.html')
 
+
+
 # LOGIN
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+    
 
     form = loginForm()
     if form.validate_on_submit():
@@ -49,6 +58,10 @@ def login():
             session['userID'] = user.userid
             session['firstName'] = user.firstname
             current_app.logger.info(user.firstname)  # Add this line for debugging
+
+            if user.ismod:
+                login_user(user, remember=True)
+                return redirect('/admin')
 
             login_user(user)
             return redirect(url_for('home')) # Change this to the home page
@@ -63,6 +76,23 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
+class AdminModelView(ModelView):
+    def is_accessible(self):
+        # Check if user is logged in and is a moderator
+        return current_user.is_authenticated and current_user.ismod
+
+    def inaccessible_callback(self, name, **kwargs):
+        # If user is not logged in, redirect to login page, else home page
+        if not current_user.is_authenticated:
+            current_app.logger.info('User is not authenticated')  # Add this line for debugging
+
+        flash('You do not have permission to view the admin page.', 'error')
+        return redirect(url_for('login'))
+# ADMIN PAGE
+admin = Admin(app, name='Admin View', template_mode='bootstrap3')
+admin.add_view(AdminModelView(User, db.session))
+admin.add_view(AdminModelView(Event, db.session))   
 
 
 # REGISTER
