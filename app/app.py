@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import EventForm, loginForm, registerForm
-from models import db, User, Event
+from forms import EventForm, loginForm, registerForm, commentForm
+from models import db, User, Event, Comment
 from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -147,17 +147,40 @@ def myevents():
     user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
     return render_template('myevents.html', events=user_events)
 
-@app.route('/eventview/<int:eventID>')
+
+@app.route('/eventview/<int:eventID>', methods=['GET','POST'])
 @login_required
 def eventdetailview(eventID):
+
+    form = commentForm(request.form)
+
+    #if comment form is submitted
+    if request.method == 'POST' and form.validate():
+        comment = Comment(
+            userID = current_user.userid,
+            eventID = eventID,
+            message = form.message.data,     
+        )
+
+        db.session.add(comment)
+        
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+        flash('There was an issue submitting you comment.')
+
+        newURL = f'/eventview/{eventID}'
+        return redirect(newURL)
     #gets entry from primarky key value
     singleEvent = Event.query.get(eventID)
     flairName = singleEvent.flairone.name if singleEvent.flairone else "None"  # Retrieve the flairs for the event
     user_has_rsvped = RSVP.query.filter_by(userID=current_user.userid, eventID=eventID).first() is not None
 
-    return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, user_has_rsvped=user_has_rsvped)
 
-@app.route('/event/<int:event_id>/rsvp', methods=['POST'])
+
+    return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, 
+                user_has_rsvped=user_has_rsvped, form=form)
 
 
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])

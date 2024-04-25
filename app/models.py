@@ -65,7 +65,9 @@ class User(db.Model, UserMixin):
             return (self.userid)
     #ADD THESE LATER
     posts = db.relationship('Event', backref='author', lazy='dynamic')
-    #comment = db.relationship('Comment', backref='author', lazy='dynamic')
+    
+    #NOT NEEDED: if you need all the comments of the user, user Comment.query.get(userid)
+    #comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -92,6 +94,7 @@ class Event(db.Model):
     flairtwo = db.relationship('Flair', foreign_keys=[flairtwo_id])
     flarirthree = db.relationship('Flair', foreign_keys=[flarirthree_id])
 
+    comments = db.relationship('Comment', backref='comments', lazy='dynamic')
 
     def __repr__(self):
         return '<Event %r>' % self.title
@@ -115,28 +118,25 @@ class RSVP(db.Model):
      eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'))
      timestamp = db.Column(db.DateTime)
      __table_args__ = (UniqueConstraint('userID', 'eventID', name='unique_rsvp_per_user_event'),)
-     
+    
 
      def __repr__(self):
          return '<RSVP %r>' % self.status
 
 
-# class comment(db.Model):
-#     __tablename__ = 'comment'
-#     commentID = db.Column(db.Integer, primary_key=True)
-#     userID = db.Column(db.Integer(80), db.ForeignKey('user.id'), unique=True)
-#     eventID = db.Column(db.Integer(80), db.ForeignKey('event.eventID'), unique=True)
-#     message = db.Column(db.String(80))
-#     timestamp = db.Column(db.DateTime)
+class Comment(db.Model):
+     __tablename__ = 'comment'
+     commentID = db.Column(db.Integer, primary_key=True)
+     userID = db.Column(db.Integer, db.ForeignKey('user.userid'))
+     eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'))
+     message = db.Column(db.String(255))
+     timestamp = db.Column(db.DateTime, default=datetime.now(pytz.timezone('US/Eastern')))
 
-#     def __init__(self, userID, eventID, comment, time):
-#         self.userID = userID
-#         self.eventID = eventID
-#         self.comment = comment
-#         self.time = time
+     author = db.Relationship('User', backref='author', lazy='joined') 
 
-#     def __repr__(self):
-#         return '<Comment %r>' % self.comment
+     def __repr__(self):
+         return '<Comment %r>' % self.comment
 
         
+
 

@@ -22,7 +22,6 @@ class registerForm(FlaskForm):
     submit = SubmitField(label='Register')
 
 
-
 ## This is for creating a post/event
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=80)])
@@ -32,3 +31,7 @@ class EventForm(FlaskForm):
     eventTime = DateTimeLocalField('Event Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])  
     location = StringField('Location', validators=[DataRequired(), Length(max=80)])
     submit = SubmitField('Create Event')
+
+class commentForm(FlaskForm):
+    message = TextAreaField('Comment', validators=[DataRequired(), Length(max=255)])
+    submit = SubmitField(label='Post!')
