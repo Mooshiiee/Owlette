@@ -217,7 +217,7 @@ def create_event():
             print("Form validated successfully")  # Debug statement
 
             # Temporary user ID for now, replace with actual user ID when login is implemented
-            temp_user_id = 1  
+            temp_user_id = current_user.userid
 
             try:
                 # Create a new event instance
@@ -233,7 +233,6 @@ def create_event():
                 # Add the new event to the database
                 db.session.add(new_event)
                 db.session.flush()  # Flush to ensure new_event gets an ID
-
 
                 # Commit changes to the database
                 db.session.commit()

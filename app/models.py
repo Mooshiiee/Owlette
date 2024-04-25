@@ -46,7 +46,6 @@ class User(db.Model, UserMixin):
                       unique=True,
                       nullable=False)
     password = db.Column(db.String(200),
-                         primary_key=False,
                          unique=False,
                          nullable=False)
     firstname = db.Column(db.String(40),
@@ -63,10 +62,11 @@ class User(db.Model, UserMixin):
     
     def get_id(self):
             return (self.userid)
+        
     #ADD THESE LATER
     posts = db.relationship('Event', backref='author', lazy='dynamic')
     
-    #NOT NEEDED: if you need all the comments of the user, user Comment.query.get(userid)
+    #NOT NEEDED: if you need all the comments of the user, user query the Comment table with userID
     #comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __repr__(self):
@@ -106,7 +106,7 @@ class Flair(db.Model):
     name = db.Column(db.String(80))
 
     def __repr__(self):
-        return '<Flair %r>' % self.name
+        return f'{self.name}'
 
 
 
@@ -119,9 +119,10 @@ class RSVP(db.Model):
      timestamp = db.Column(db.DateTime)
      __table_args__ = (UniqueConstraint('userID', 'eventID', name='unique_rsvp_per_user_event'),)
     
+    
 
      def __repr__(self):
-         return '<RSVP %r>' % self.status
+         return '<RSVP %r>' % self.rsvpID
 
 
 class Comment(db.Model):
@@ -135,7 +136,7 @@ class Comment(db.Model):
      author = db.Relationship('User', backref='author', lazy='joined') 
 
      def __repr__(self):
-         return '<Comment %r>' % self.comment
+         return '<Comment %r>' % self.message
 
         
 
