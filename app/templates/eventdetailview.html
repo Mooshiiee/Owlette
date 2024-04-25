@@ -3,10 +3,10 @@
 {% block content %}
 
 
-
 <div class="container">
     <div class="row">
       <div class="col-md-8 mx-auto mt-5">
+
         <div class="card">
           <div class="card-body">
             <h2 class="card-title">{{singleEvent.title}}</h2>
@@ -27,42 +27,60 @@
                     <i class="fas fa-calendar-check"></i> RSVP
                 </button>
                 {% endif %}
-            </form>
+              </form>
             
             </div>
           </div>
         </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+              <div class="col-auto me-auto">Post a Comment</div>
+          </div>
+          <div class='card-body'>
+              <form method="POST">
+                {{ form.hidden_tag() }}
+                {{ form.message.label(class="form-label") }}
+                {{ form.message(class="form-control")  }}
+                {% for error in form.message.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+
+          </div>
+          <div class='card-footer'>
+            {{ form.submit(class="btn btn-warning") }}
+          </div>
+                </form>
+        </div>
+
         <div class="card mt-4">
           <div class="card-header">
             Comments
           </div>
           <ul class="list-group list-group-flush">
+            {% for comment in singleEvent.comments%}
             <li class="list-group-item">
               <div class="d-flex justify-content-between">
                 <div>
-                  <strong>John Doe</strong>
-                  <small class="text-muted">2024-04-12</small>
+                  <strong>{{comment.author.firstname}} {{comment.author.lastname}}</strong>
+                  <small class="text-muted">{{ comment.timestamp.strftime(' %d/%m/%Y %H:%M ') }}</small>
                 </div>
                 <div>
-                  <span>This event looks amazing! Can't wait to attend!</span>
+                  <span>{{comment.message}}</span>
                 </div>
               </div>
             </li>
-            <li class="list-group-item">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <strong>Jane Smith</strong>
-                  <small class="text-muted">2024-04-11</small>
-                </div>
-                <div>
-                  <span>I'll definitely be there!</span>
-                </div>
-              </div>
-            </li>
+            {% endfor %}
+
           </ul>
         </div>
       </div>
     </div>
+
+
+  
+
+
   </div>
   
 
