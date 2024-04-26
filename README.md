@@ -16,7 +16,7 @@ Owlette
 ## mac
 source venv/bin/activate
 ## windows
-bin/Scripts/Activate
+/venv/Scripts/Activate
 
 # Install requirments.txt
 pip install -r requirements.txt

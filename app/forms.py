@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SelectMultipleField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField
+from wtforms import StringField, SelectField, SelectMultipleField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length
 
 
@@ -35,3 +35,8 @@ class EventForm(FlaskForm):
 class commentForm(FlaskForm):
     message = TextAreaField('Comment', validators=[DataRequired(), Length(max=255)])
     submit = SubmitField(label='Post!')
+
+class userBioForm(FlaskForm):
+    bio = TextAreaField('Bio:', validators=[Length(max=255)])
+    #changeUsername = BooleanField("Change my username", validators=[DataRequired()])
+    submit = SubmitField(label='Save Changes')

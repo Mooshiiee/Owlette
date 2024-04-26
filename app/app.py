@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import EventForm, loginForm, registerForm, commentForm
+from forms import EventForm, loginForm, registerForm, commentForm, userBioForm
 from models import db, User, Event, Comment
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -251,6 +251,22 @@ def create_event():
         print("Form not submitted via POST")  # Debug statement
 
     return render_template('createEvent.html', form=form, flair=form.flair.choices)
+
+
+#MyProfile
+@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+@login_required
+def viewAccount(username):
+    user = user.query.get(username)
+    form = userBioForm(request.form)
+    
+    if request.method == 'POST' and form.validate():
+        #user.username = form.username.data
+        user.bio = form.userBioForm.data
+        db.session.commit()
+
+        return render_template('editProfile.html', form=form)
+    return redirect(url_for('home'))
 
 
 
