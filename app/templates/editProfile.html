@@ -16,6 +16,9 @@
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
         </div>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-warning") }}
+        </div>
         <!--<div class="mb-3">
             {{ form.changeUsername.label(class="form-label") }}
             {{ form.changeUsername(class="form-control") }}

@@ -112,7 +112,8 @@ def register():
             username=rform.username.data,
             firstname=rform.firstname.data,
             lastname=rform.lastname.data,
-            password=rform.password.data
+            password=rform.password.data,
+            bio=rform.bio.data
         )
         # Save the user to the database
         db.session.add(user)
@@ -253,22 +254,26 @@ def create_event():
     return render_template('createEvent.html', form=form, flair=form.flair.choices)
 
 
-#MyProfile
-@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+#View Someone's Profile
+#@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+#@login_required
+#def viewProfile(username):
+#    user = User.query.get(username)
+#    return redirect(url_for('viewProfile', username=username))
+
+
+#Edit My Profile
+@app.route('/editProfile/<username>', methods=['GET', 'POST'])
 @login_required
-def viewAccount(username):
-    user = user.query.get(username)
+def editProfile(username):
+    user = User.query.get(username)
     form = userBioForm(request.form)
-    
     if request.method == 'POST' and form.validate():
         #user.username = form.username.data
-        user.bio = form.userBioForm.data
+        user.bio = form.bio.data
         db.session.commit()
-
-        return render_template('editProfile.html', form=form)
-    return redirect(url_for('home'))
-
-
+        return redirect(url_for('home'))
+    return render_template('editProfile.html', form=form)
 
 
 

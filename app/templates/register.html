@@ -62,6 +62,13 @@
                                     <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>
+                            <div class="mb-3">
+                                {{ form.bio.label(class="form-label") }}
+                                {{ form.bio(class="form-control") }}
+                                {% for error in form.bio.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
                             <div class="text-center">
                                 {{ form.submit(class="btn btn-warning") }}
                             </div>
