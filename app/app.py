@@ -270,6 +270,7 @@ def create_event():
 @app.route('/editProfile/<int:userid>', methods=['GET', 'POST'])
 @login_required 
 def editProfile(userid):
+    print(userid)
     user = User.query.get(userid)
     if user.userID == userid:
         form = userBioForm(request.form)
