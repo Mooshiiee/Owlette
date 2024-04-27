@@ -260,19 +260,23 @@ def create_event():
 #    return redirect(url_for('viewProfile', username=username))
 
 
+#@app.route('/editProfile/<int:userID>', methods=['GET', 'POST'])
+#@login_required 
+#def editProfile(userID):
+#    user = User.query.get(userID)
 
-# Edit My Profile
-@app.route('/editProfile/<username>', methods=['GET', 'POST'])
-@login_required
-def editProfile(username):
-    print('rendering')
-    user = User.query.get(username)
-    if user.username == username:
+
+
+@app.route('/editProfile/<int:userID>', methods=['GET', 'POST'])
+@login_required 
+def editProfile(userID):
+    user = User.query.get(userID)
+    if user.userID == userID:
         form = userBioForm(request.form)
         if request.method == 'POST' and form.validate():
             user.bio = form.bio.data
             db.session.commit()
-            return redirect(url_for('viewProfile', username=username))
+            return redirect(url_for('viewProfile', userID=userID))
         return render_template('editProfile.html', form=form)
     else:
         print('not the same user')
