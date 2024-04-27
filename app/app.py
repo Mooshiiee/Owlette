@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import EventForm, loginForm, registerForm, commentForm
+from forms import EventForm, loginForm, registerForm, commentForm, userBioForm
 from models import db, User, Event, Comment
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -252,7 +252,30 @@ def create_event():
 
     return render_template('createEvent.html', form=form, flair=form.flair.choices)
 
+#View Someone's Profile
+#@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+#@login_required
+#def viewProfile(username):
+#    user = User.query.get(username)
+#    return redirect(url_for('viewProfile', username=username))
 
+
+
+# Edit My Profile
+@app.route('/editProfile/<username>', methods=['GET', 'POST'])
+@login_required
+def editProfile(username):
+    print('rendering')
+    user = User.query.get(username)
+    if user.username == username:
+        form = userBioForm(request.form)
+        if request.method == 'POST' and form.validate():
+            user.bio = form.bio.data
+            db.session.commit()
+            return redirect(url_for('viewProfile', username=username))
+        return render_template('editProfile.html', form=form)
+    else:
+        print('not the same user')
 
 
 
