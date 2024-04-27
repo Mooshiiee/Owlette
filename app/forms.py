@@ -39,5 +39,4 @@ class commentForm(FlaskForm):
 
 class userBioForm(FlaskForm):
     bio = TextAreaField('Bio', validators=[Length(max=255)])
-    #changeUsername = BooleanField("Change my username", validators=[DataRequired()])
     submit = SubmitField(label='Save Changes')
