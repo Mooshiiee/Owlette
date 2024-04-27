@@ -112,7 +112,8 @@ def register():
             username=rform.username.data,
             firstname=rform.firstname.data,
             lastname=rform.lastname.data,
-            password=rform.password.data
+            password=rform.password.data,
+            bio=rform.bio.data
         )
         # Save the user to the database
         db.session.add(user)
@@ -272,17 +273,16 @@ def create_event():
 def editProfile(userid):
     print(userid)
     user = User.query.get(userid)
-    if user.userID == userid:
+    if user.userid == userid:
         form = userBioForm(request.form)
         if request.method == 'POST' and form.validate_on_submit():
             user.bio = form.bio.data
             db.session.commit()
-            return redirect(url_for('viewProfile', userid=userid))
+
+            return redirect(url_for('home', userid=userid))
         return render_template('editProfile.html', form=form)
     else:
         print('not the same user')
 
-
-
-
-
+#@app.route('.viewProfile/<int:userid>', methods=['GET', 'POST'])
+#@gin

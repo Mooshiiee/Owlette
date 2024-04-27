@@ -60,6 +60,19 @@ class User(db.Model, UserMixin):
     ismod = db.Column(db.Boolean,
                            default=False)
     
+    # #Attributes for the user's profile
+    # madeProfileAlready = db.Column(db.Boolean,
+    #                                default=False)
+    # pronouns = db.Column(db.String(40))
+    # aboutMe = db.Column(db.String(500),
+    #                      primary_key=False, unique=False, nullable=False)
+    # myMajor = db.Column(db.String(40),
+    #                      nullable=False)
+    # academicYear = db.Column(db.String(40),
+    #                           nullable=False)
+    # socialMediaLink = db.Column(db.String(255),
+    #                              nullable=True)
+    
     def get_id(self):
             return (self.userid)
         
