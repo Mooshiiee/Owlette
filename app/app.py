@@ -266,7 +266,8 @@ def create_event():
 #def editProfile(userID):
 #    user = User.query.get(userID)
 
-
+#def getUserid():
+    userid = 
 
 @app.route('/editProfile/<int:userid>', methods=['GET', 'POST'])
 @login_required 
