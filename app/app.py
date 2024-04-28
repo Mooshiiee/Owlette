@@ -261,27 +261,45 @@ def create_event():
 #    return redirect(url_for('viewProfile', username=username))
 
 
-#@app.route('/editProfile/<int:userID>', methods=['GET', 'POST'])
+#@app.route('/editProfile', methods=['GET', 'POST'])
 #@login_required 
-#def editProfile(userID):
-#    user = User.query.get(userID)
+#def editProfile():
+    #print(userid)
+#    userid = current_user.userid
+#    user = User.query.get(userid)
+#    current_bio = user.bio
+#    if user.userid == current_user.userid:
+#        form = userBioForm(request.form)
+#        if request.method == 'POST' and form.validate_on_submit():
+#            curent_bio = form.bio.data
+#            db.session.commit()
 
-#def getUserid():
-    #userid = 
+#            return redirect(url_for('home', userid=userid))
+#        return render_template('editProfile.html', form=form)
+#    else:
+#        print('not the same user')
+
+#from flask import render_template
+#from flask_login import current_user, login_required
 
 @app.route('/editProfile', methods=['GET', 'POST'])
-@login_required 
+@login_required
 def editProfile():
-    #print(userid)
     userid = current_user.userid
     user = User.query.get(userid)
     if user.userid == current_user.userid:
-        form = userBioForm(request.form)
+        # Retrieve the user's current bio from the database
+        current_bio = user.bio
+
+        # Create the form and pass the user's current bio as the initial value
+        form = userBioForm(request.form, bio=current_bio)
+
         if request.method == 'POST' and form.validate_on_submit():
             user.bio = form.bio.data
             db.session.commit()
 
             return redirect(url_for('home', userid=userid))
+
         return render_template('editProfile.html', form=form)
     else:
         print('not the same user')
