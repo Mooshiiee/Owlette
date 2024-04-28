@@ -34,7 +34,6 @@
           {% endfor %}
       </select>
   </form>
-<!-- left here, trying to fix flair filter   -->
 </div>
 
 
@@ -50,8 +49,8 @@
             <span class="badge text-bg-primary rounded-pill">{{ events.eventTime.strftime('%B %d, %Y') }}</span>
             <span class="badge text-bg-success rounded-pill">{{ events.eventTime.strftime('%I:%M %p') }}</span>
             <!-- Showcase flair if it exists -->
-            {% if events.flairone %}
-            <span class="badge text-bg-primary rounded-pill">{{ events.flairone.name }}</span>
+            {% if events.flairone is not none %}
+            <span class="badge text-bg-primary rounded-pill">{{ events.flairone }}</span>
             {% endif %}
             <p>{{events.location}}</p>
             <a href="/eventview/{{events.eventID}}" class="btn btn-primary stretched-link">Show More</a>
@@ -60,50 +59,7 @@
       </li>
       {% endfor %}
     </ul>
-
-    <div class="card m-1 w-75">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
-      </div>
-    </div>
-    <div class="card m-1 w-75">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
-      </div>
-    </div>
-    <div class="card m-1 w-75">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
-      </div>
-    </div>
-    <div class="card m-1 w-75">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
-      </div>
-    </div>
-    <div class="card m-1 w-75">
-      <div class="card-body">
-        <h5 class="card-title">{{events.title}}</h5>
-        <p class="card-text">{{events.description}}</p>
-        <p><small>{{events.location}} {{events.eventTime}}</small></p>
-        <a href="#" class="btn btn-primary stretched-link">Show More</a>
-      </div>
- 
-    
   <div>
-
 </div>
 
 <script>
