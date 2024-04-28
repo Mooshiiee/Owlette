@@ -158,6 +158,8 @@ def myevents():
 def eventdetailview(eventID):
 
     form = commentForm(request.form)
+    rsvp_count = RSVP.query.filter_by(eventID=eventID).count() 
+
 
     #if comment form is submitted
     if request.method == 'POST' and form.validate():
@@ -186,7 +188,7 @@ def eventdetailview(eventID):
 
 
     return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, 
-                user_has_rsvped=user_has_rsvped, form=form)
+                user_has_rsvped=user_has_rsvped, rsvp_count=rsvp_count, form=form)
 
 
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])
