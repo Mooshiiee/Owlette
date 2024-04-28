@@ -17,7 +17,7 @@ db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+default ={}
 
 
 @login_manager.user_loader
@@ -267,7 +267,7 @@ def create_event():
 #    user = User.query.get(userID)
 
 #def getUserid():
-    userid = 
+    #userid = 
 
 @app.route('/editProfile/<int:userid>', methods=['GET', 'POST'])
 @login_required 
