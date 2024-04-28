@@ -4,6 +4,19 @@
 
 
 <div class="container">
+
+
+
+    <!-- Flash messages display area -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <div class="row">
       <div class="col-md-8 mx-auto mt-5">
 
@@ -28,13 +41,13 @@
               <form action="{{ url_for('rsvp_to_event', event_id=singleEvent.eventID) }}" method="post">
                 {% if user_has_rsvped %}
                 <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-times"></i> Cancel RSVP
+                    Cancel RSVP
                 </button>
-                {% else %}
+            {% else %}
                 <button type="submit" class="btn btn-success">
-                    <i class="fas fa-calendar-check"></i> RSVP
+                    RSVP
                 </button>
-                {% endif %}
+            {% endif %}
               </form>
             
             </div>

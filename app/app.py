@@ -10,7 +10,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
-from models import db, User, Event, Flair, RSVP
+from models import db, User, Event, Flair,RSVP
+from flask import flash, url_for
 
 db.init_app(app)
 
@@ -143,9 +144,13 @@ def home():
 @app.route('/myevents')
 @login_required
 def myevents():
-    print(current_user.userid)
-    user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
-    return render_template('myevents.html', events=user_events)
+    event_type = request.args.get('type', 'posted')  # Default to showing posted events
+    if event_type == 'posted':
+        events = Event.query.filter_by(userID=current_user.userid).all()
+    else:  # Assuming 'type' is 'rsvped'
+        events = Event.query.join(RSVP, RSVP.eventID == Event.eventID).filter(RSVP.userID == current_user.userid).all()
+    return render_template('myevents.html', events=events, event_type=event_type)
+
 
 
 @app.route('/eventview/<int:eventID>', methods=['GET','POST'])
@@ -179,6 +184,7 @@ def eventdetailview(eventID):
 
 
 
+
     return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, 
                 user_has_rsvped=user_has_rsvped, form=form)
 
@@ -186,21 +192,29 @@ def eventdetailview(eventID):
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp_to_event(event_id):
+    print(f"Attempting to RSVP for user {current_user.userid} to event {event_id}")
     existing_rsvp = RSVP.query.filter_by(userID=current_user.userid, eventID=event_id).first()
-    
+
     if existing_rsvp:
+        print(f"Found existing RSVP for event {event_id}, deleting")
         db.session.delete(existing_rsvp)
-        flash('Your RSVP has been removed.', 'info')
+        try:
+            db.session.commit()
+            flash('Your RSVP has been removed.', 'info')
+        except Exception as e:
+            db.session.rollback()
+            flash('There was an issue removing your RSVP.', 'danger')
     else:
+        print(f"No RSVP found for event {event_id}, creating new")
         new_rsvp = RSVP(userID=current_user.userid, eventID=event_id)
         db.session.add(new_rsvp)
-        flash('Your RSVP has been recorded!', 'success')
-
-    try:
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        flash('There was an issue updating your RSVP.', 'danger')
+        try:
+            db.session.commit()
+            flash('Your RSVP has been recorded!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('There was an issue recording your RSVP.', 'danger')
+            print(f"Error: {str(e)}")
     
     return redirect(url_for('eventdetailview', eventID=event_id))
 

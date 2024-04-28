@@ -117,7 +117,7 @@ class RSVP(db.Model):
      userID = db.Column(db.Integer, db.ForeignKey('user.userid'))
      eventID = db.Column(db.Integer, db.ForeignKey('event.eventID'))
      timestamp = db.Column(db.DateTime)
-     __table_args__ = (UniqueConstraint('userID', 'eventID', name='unique_rsvp_per_user_event'),)
+
     
     
 
