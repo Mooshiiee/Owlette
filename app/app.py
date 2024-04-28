@@ -269,12 +269,13 @@ def create_event():
 #def getUserid():
     #userid = 
 
-@app.route('/editProfile/<int:userid>', methods=['GET', 'POST'])
+@app.route('/editProfile', methods=['GET', 'POST'])
 @login_required 
-def editProfile(userid):
-    print(userid)
+def editProfile():
+    #print(userid)
+    userid = current_user.userid
     user = User.query.get(userid)
-    if user.userid == userid:
+    if user.userid == current_user.userid:
         form = userBioForm(request.form)
         if request.method == 'POST' and form.validate_on_submit():
             user.bio = form.bio.data
@@ -284,6 +285,3 @@ def editProfile(userid):
         return render_template('editProfile.html', form=form)
     else:
         print('not the same user')
-
-#@app.route('.viewProfile/<int:userid>', methods=['GET', 'POST'])
-#@gin
