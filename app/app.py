@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, current_app, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms import EventForm, loginForm, registerForm, commentForm
+from forms import EventForm, loginForm, registerForm, commentForm, userBioForm
 from models import db, User, Event, Comment
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -17,7 +17,7 @@ db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+default ={}
 
 
 @login_manager.user_loader
@@ -64,6 +64,12 @@ def login():
                 return redirect('/admin')
 
             login_user(user)
+            
+            #IMPORTANT SECURITY STEP IN https://flask-login.readthedocs.io/en/latest/
+            next = flask.request.args.get('next')
+            if not url_has_allowed_host_and_scheme(next, request.host):
+                return flask.abort(400)
+
             return redirect(url_for('home')) # Change this to the home page
         
         else:
@@ -112,7 +118,8 @@ def register():
             username=rform.username.data,
             firstname=rform.firstname.data,
             lastname=rform.lastname.data,
-            password=rform.password.data
+            password=rform.password.data,
+            bio=rform.bio.data
         )
         # Save the user to the database
         db.session.add(user)
@@ -138,7 +145,8 @@ def home():
     else:
         # Fetch events based on the selected flair
         events = Event.query.join(Event.flairone).filter(Flair.name == flair_filter).all()
-    return render_template('home.html', events=events, flairs=flairs)
+    return render_template('home.html', events=events, flairs=flairs, 
+                            current_user=current_user )
 
 @app.route('/myevents')
 @login_required
@@ -252,9 +260,59 @@ def create_event():
 
     return render_template('createEvent.html', form=form, flair=form.flair.choices)
 
+#View Someone's Profile
+#@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
+#@login_required
+#def viewProfile(username):
+#    user = User.query.get(username)
+#    return redirect(url_for('viewProfile', username=username))
 
 
+#@app.route('/editProfile', methods=['GET', 'POST'])
+#@login_required 
+#def editProfile():
+    #print(userid)
+#    userid = current_user.userid
+#    user = User.query.get(userid)
+#    current_bio = user.bio
+#    if user.userid == current_user.userid:
+#        form = userBioForm(request.form)
+#        if request.method == 'POST' and form.validate_on_submit():
+#            curent_bio = form.bio.data
+#            db.session.commit()
 
+#            return redirect(url_for('home', userid=userid))
+#        return render_template('editProfile.html', form=form)
+#    else:
+#        print('not the same user')
 
+#from flask import render_template
+#from flask_login import current_user, login_required
 
+@app.route('/profile/<int:userid>')
+@login_required
+def profileView(userid):
+    user = User.query.get(userid)
+    return render_template('profileview.html', user=user )
 
+@app.route('/editProfile', methods=['GET', 'POST'])
+@login_required
+def editProfile():
+    userid = current_user.userid
+    user = User.query.get(userid)
+    if user.userid == current_user.userid:
+        # Retrieve the user's current bio from the database
+        current_bio = user.bio
+
+        # Create the form and pass the user's current bio as the initial value
+        form = userBioForm(request.form, bio=current_bio)
+
+        if request.method == 'POST' and form.validate_on_submit():
+            user.bio = form.bio.data
+            db.session.commit()
+
+            return redirect(url_for('home', userid=userid))
+
+        return render_template('editProfile.html', form=form)
+    else:
+        print('not the same user')

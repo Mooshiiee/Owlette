@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SelectMultipleField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField
+from wtforms import StringField, SelectField, SelectMultipleField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length
 
 
@@ -19,6 +19,7 @@ class registerForm(FlaskForm):
     #confirm_password = PasswordField('Confirm Password')
     firstname = StringField(label='First Name', validators=[DataRequired(), Length(max=80)])
     lastname = StringField(label='Last Name', validators=[DataRequired(), Length(max=80)])
+    bio = TextAreaField(label='Bio', validators=[DataRequired(), Length(max=255)])
     submit = SubmitField(label='Register')
 
 
@@ -26,7 +27,7 @@ class registerForm(FlaskForm):
 class EventForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=80)])
     status = StringField('Status', validators=[Length(max=80)]) ## STATUS NOT REQUIRED. ASSUMED EVENT IS ACTIVE UNTILL CANCELD
-    description = TextAreaField('Description', validators=[DataRequired(), Length(max=255)])  # Textarea for longer input
+    description = TextAreaField('Description', validators=[DataRequired(), Length(max=1000)])  # Textarea for longer input
     flair = SelectField('Flair', coerce=int, choices=[])
     eventTime = DateTimeLocalField('Event Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])  
     location = StringField('Location', validators=[DataRequired(), Length(max=80)])
@@ -35,3 +36,7 @@ class EventForm(FlaskForm):
 class commentForm(FlaskForm):
     message = TextAreaField('Comment', validators=[DataRequired(), Length(max=255)])
     submit = SubmitField(label='Post!')
+
+class userBioForm(FlaskForm):
+    bio = TextAreaField('Bio', validators=[Length(max=255)])
+    submit = SubmitField(label='Save Changes')
