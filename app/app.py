@@ -64,6 +64,12 @@ def login():
                 return redirect('/admin')
 
             login_user(user)
+            
+            #IMPORTANT SECURITY STEP IN https://flask-login.readthedocs.io/en/latest/
+            next = flask.request.args.get('next')
+            if not url_has_allowed_host_and_scheme(next, request.host):
+                return flask.abort(400)
+
             return redirect(url_for('home')) # Change this to the home page
         
         else:
@@ -139,7 +145,8 @@ def home():
     else:
         # Fetch events based on the selected flair
         events = Event.query.join(Event.flairone).filter(Flair.name == flair_filter).all()
-    return render_template('home.html', events=events, flairs=flairs)
+    return render_template('home.html', events=events, flairs=flairs, 
+                            current_user=current_user )
 
 @app.route('/myevents')
 @login_required
@@ -281,6 +288,12 @@ def create_event():
 
 #from flask import render_template
 #from flask_login import current_user, login_required
+
+@app.route('/profile/<int:userid>')
+@login_required
+def profileView(userid):
+    user = User.query.get(userid)
+    return render_template('profileview.html', user=user )
 
 @app.route('/editProfile', methods=['GET', 'POST'])
 @login_required

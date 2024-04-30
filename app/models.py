@@ -93,7 +93,7 @@ class Event(db.Model):
     userID = db.Column(db.Integer, db.ForeignKey('user.userid'))
     title = db.Column(db.String(80))
     status = db.Column(db.String(80), default='active')
-    description = db.Column(db.String(389))
+    description = db.Column(db.String(1000))
     eventTime = db.Column(db.DateTime)
     location = db.Column(db.String(80))
 
@@ -108,6 +108,8 @@ class Event(db.Model):
     flarirthree = db.relationship('Flair', foreign_keys=[flarirthree_id])
 
     comments = db.relationship('Comment', backref='comments', lazy='dynamic')
+    op = db.relationship('User', backref='op', lazy='joined')
+
 
     def __repr__(self):
         return '<Event %r>' % self.title

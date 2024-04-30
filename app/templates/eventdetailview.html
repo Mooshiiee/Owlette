@@ -10,9 +10,21 @@
         <div class="card">
           <div class="card-body">
             <h2 class="card-title">{{singleEvent.title}}</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                <p></p>
+                <li style="color: red;">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
             <p class="card-text">{{singleEvent.description}}</p>
             <p class="card-text"><strong>Location:</strong> {{singleEvent.location}}</p>
             <p class="card-text"><strong>Time:</strong> {{singleEvent.eventTime.strftime(' %d/%m/%Y %I:%M %p')}}</p>
+            <p class="card-text"><strong>Posted By:</strong> <a href='{{url_for('profileView', userid=singleEvent.op.userid)}}'>{{singleEvent.op.username}}</a></p>
+
 
             {% if singleEvent.flairone is not none %}
             <h5><span class="badge text-bg-success rounded-pill badge-lg">{{ singleEvent.flairone }}</span></h5>

@@ -25,7 +25,7 @@
       <ul class="nav nav-pills flex-column mb-auto">
         
         <li class="nav-item">
-          <a href="/home" class="nav-link text-white {{ 'active' if request.path == '/home' else '' }}" 
+          <a href="{{url_for('home')}}" class="nav-link text-white {{ 'active' if request.path == '/home' else '' }}" 
           aria-current="page">
             <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
             Home
@@ -33,7 +33,7 @@
         </li>
         
        <li>
-          <a href="/myevents" class="nav-link text-white {{ 'active' if request.path == '/myevents' else '' }}" 
+          <a href="{{url_for('myevents')}}" class="nav-link text-white {{ 'active' if request.path == '/myevents' else '' }}" 
           aria-current="page">
             <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
             My Events
@@ -42,19 +42,10 @@
         
 
         <li>
-          <a href="/create-event" class="nav-link text-white {{ 'active' if request.path == '/create-event' else '' }}" 
+          <a href="{{url_for('create_event')}}" class="nav-link text-white {{ 'active' if request.path == '/create-event' else '' }}" 
           aria-current="page">
             <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
             Create Event
-          </a>
-        </li>
-
-
-        <li>
-          <a href="/editProfile" class="nav-link text-white {{ 'active' if request.path == '/editProfile' else '' }}" 
-          aria-current="page">
-            <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-            Edit Profile
           </a>
         </li>
       </ul>
@@ -62,8 +53,8 @@
       
       <hr>
       <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" role="button" id="dropdownUser1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <a href="{{ url_for('profileView', userid=current_user.userid) }}" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" role="button" id="dropdownUser1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
           
           {% if current_user.is_authenticated %}
             <strong>
