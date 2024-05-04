@@ -6,26 +6,34 @@ from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
+'''
+    flask configurations and imports we use our forms, models, flask login, flask admin
+'''
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
+#setting our url to the db file
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
 
 from models import db, User, Event, Flair, RSVP
+from flask import flash, url_for
 
 db.init_app(app)
-
-
+#initialize the app and flask login
 login_manager = LoginManager()
 login_manager.init_app(app)
 default ={}
 
 
+#user loader decorator to load a user given their id
 @login_manager.user_loader
 def load_user(userid):
     return User.query.get(int(userid))
 
+#implementing migrate for easier migrations
 migrate = Migrate(app, db)
 
+#test page for our db
 @app.route('/testdb')
 def testdb():
     dbtest = db.get_or_404(Event, 1)
@@ -42,30 +50,24 @@ def index():
 
 # LOGIN
 
-'''
-    Routing for login. This is where the login form is validated. System checks for an existing user
-    and makes sure there is an existing user and that the inputted password matches the user password
-    in the db. Also implemented flask login to make logging in an easier process
-'''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
-    #if the user is autheticated the system will direct the user to the home page
+    #if the user is logged in and authenticated it will redirect to home page
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     
-    #we make a new login form object
+    #intialize a new form using our login form class
     form = loginForm()
     if form.validate_on_submit():
-        current_app.logger.info('Form submitted successfully')  # Add this line for debugging
 
+        #we find the user using the query function using the email address
         user = User.query.filter_by(email=form.email.data).first()
 
+        #if the the password and email matches we will set the session for the user
         if user and user.password == form.password.data and user.email == form.email.data:
             session['userID'] = user.userid
             session['firstName'] = user.firstname
-            current_app.logger.info(user.firstname)  # Add this line for debugging
-
+            #if the user's ismod attribute is true it will login the user and redirect to the admin page
             if user.ismod:
                 login_user(user, remember=True)
                 return redirect('/admin')
@@ -80,16 +82,22 @@ def login():
             return redirect(url_for('home')) # Change this to the home page
         
         else:
+            #if the login is unsuccessful it will flash this image
             flash('Login unsuccessful. Please check your credentials.', 'danger')
-
+    #this is where we pass the form to the login template usign WTFforms
     return render_template('login.html', form=form)
 
+#logout route
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
 
+'''
+    flask-admin has preset model view, but to add unique restrictions a custom model view is implemented to only
+    allow is mod users to view the data
+'''
 class AdminModelView(ModelView):
     def is_accessible(self):
         # Check if user is logged in and is a moderator
@@ -103,6 +111,7 @@ class AdminModelView(ModelView):
         flash('You do not have permission to view the admin page.', 'error')
         return redirect(url_for('login'))
 # ADMIN PAGE
+
 admin = Admin(app, name='Admin View', template_mode='bootstrap3')
 admin.add_view(AdminModelView(User, db.session))
 admin.add_view(AdminModelView(Event, db.session))   
@@ -156,27 +165,35 @@ def home():
                             current_user=current_user )
 
 @app.route('/myevents')
+#we use login required on pages like home and events so that users arent allowed to access these pages without logging in
 @login_required
 def myevents():
-    print(current_user.userid)
-    user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
-    return render_template('myevents.html', events=user_events)
+    event_type = request.args.get('type', 'posted')  # Default to showing posted events
+    if event_type == 'posted':
+        events = Event.query.filter_by(userID=current_user.userid).all()
+    else:  # Assuming 'type' is 'rsvped'
+        events = Event.query.join(RSVP, RSVP.eventID == Event.eventID).filter(RSVP.userID == current_user.userid).all()
+    return render_template('myevents.html', events=events, event_type=event_type)
 
 
+#EVENT VIEW ROUTE
 @app.route('/eventview/<int:eventID>', methods=['GET','POST'])
 @login_required
 def eventdetailview(eventID):
 
     form = commentForm(request.form)
+    rsvp_count = RSVP.query.filter_by(eventID=eventID).count() 
+
 
     #if comment form is submitted
     if request.method == 'POST' and form.validate():
+        #we make a new object and pass in the parameters
         comment = Comment(
             userID = current_user.userid,
             eventID = eventID,
             message = form.message.data,     
         )
-
+        #we add the comment to the db
         db.session.add(comment)
         
         try:
@@ -194,28 +211,38 @@ def eventdetailview(eventID):
 
 
 
+
     return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, 
-                user_has_rsvped=user_has_rsvped, form=form)
+                user_has_rsvped=user_has_rsvped, rsvp_count=rsvp_count, form=form)
+
 
 
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp_to_event(event_id):
+    print(f"Attempting to RSVP for user {current_user.userid} to event {event_id}")
     existing_rsvp = RSVP.query.filter_by(userID=current_user.userid, eventID=event_id).first()
-    
+
     if existing_rsvp:
+        print(f"Found existing RSVP for event {event_id}, deleting")
         db.session.delete(existing_rsvp)
-        flash('Your RSVP has been removed.', 'info')
+        try:
+            db.session.commit()
+            flash('Your RSVP has been removed.', 'info')
+        except Exception as e:
+            db.session.rollback()
+            flash('There was an issue removing your RSVP.', 'danger')
     else:
+        print(f"No RSVP found for event {event_id}, creating new")
         new_rsvp = RSVP(userID=current_user.userid, eventID=event_id)
         db.session.add(new_rsvp)
-        flash('Your RSVP has been recorded!', 'success')
-
-    try:
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        flash('There was an issue updating your RSVP.', 'danger')
+        try:
+            db.session.commit()
+            flash('Your RSVP has been recorded!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('There was an issue recording your RSVP.', 'danger')
+            print(f"Error: {str(e)}")
     
     return redirect(url_for('eventdetailview', eventID=event_id))
 
@@ -266,35 +293,6 @@ def create_event():
         print("Form not submitted via POST")  # Debug statement
 
     return render_template('createEvent.html', form=form, flair=form.flair.choices)
-
-#View Someone's Profile
-#@app.route('/viewProfile/<username>', methods=['GET', 'POST'])
-#@login_required
-#def viewProfile(username):
-#    user = User.query.get(username)
-#    return redirect(url_for('viewProfile', username=username))
-
-
-#@app.route('/editProfile', methods=['GET', 'POST'])
-#@login_required 
-#def editProfile():
-    #print(userid)
-#    userid = current_user.userid
-#    user = User.query.get(userid)
-#    current_bio = user.bio
-#    if user.userid == current_user.userid:
-#        form = userBioForm(request.form)
-#        if request.method == 'POST' and form.validate_on_submit():
-#            curent_bio = form.bio.data
-#            db.session.commit()
-
-#            return redirect(url_for('home', userid=userid))
-#        return render_template('editProfile.html', form=form)
-#    else:
-#        print('not the same user')
-
-#from flask import render_template
-#from flask_login import current_user, login_required
 
 @app.route('/profile/<int:userid>')
 @login_required
