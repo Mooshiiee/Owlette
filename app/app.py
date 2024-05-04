@@ -168,12 +168,9 @@ def home():
 #we use login required on pages like home and events so that users arent allowed to access these pages without logging in
 @login_required
 def myevents():
-    event_type = request.args.get('type', 'posted')  # Default to showing posted events
-    if event_type == 'posted':
-        events = Event.query.filter_by(userID=current_user.userid).all()
-    else:  # Assuming 'type' is 'rsvped'
-        events = Event.query.join(RSVP, RSVP.eventID == Event.eventID).filter(RSVP.userID == current_user.userid).all()
-    return render_template('myevents.html', events=events, event_type=event_type)
+    print(current_user.userid)
+    user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
+    return render_template('myevents.html', events=user_events)
 
 
 #EVENT VIEW ROUTE
@@ -213,8 +210,7 @@ def eventdetailview(eventID):
 
 
     return render_template("eventdetailview.html", singleEvent=singleEvent, flairName=flairName, 
-                user_has_rsvped=user_has_rsvped, rsvp_count=rsvp_count, form=form)
-
+                user_has_rsvped=user_has_rsvped, form=form)
 
 
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])
