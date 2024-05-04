@@ -4,6 +4,10 @@
 
 
 <div class="container">
+
+
+
+   
     <div class="row">
       <div class="col-md-8 mx-auto mt-5">
 
@@ -37,15 +41,26 @@
     
               <form action="{{ url_for('rsvp_to_event', event_id=singleEvent.eventID) }}" method="post">
                 {% if user_has_rsvped %}
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-times"></i> Cancel RSVP
+                <button type="submit" class="btn btn-danger position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="Attendance Count">
+                    Cancel RSVP
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ rsvp_count }}
+                        <span class="attendee-text">RSVPs</span>
+                        <span class="visually-hidden">attendees</span>
+                    </span>
                 </button>
                 {% else %}
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-calendar-check"></i> RSVP
+                <button type="submit" class="btn btn-success position-relative" data-bs-toggle="tooltip" data-bs-placement="top" title="Attendance Count">
+                    RSVP
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                        {{ rsvp_count }}
+                        <span class="attendee-text">RSVPs</span>
+                        <span class="visually-hidden">attendees</span>
+                    </span>
                 </button>
                 {% endif %}
-              </form>
+            </form>
+            
             
             </div>
           </div>
