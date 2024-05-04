@@ -42,12 +42,19 @@ def index():
 
 # LOGIN
 
+'''
+    Routing for login. This is where the login form is validated. System checks for an existing user
+    and makes sure there is an existing user and that the inputted password matches the user password
+    in the db. Also implemented flask login to make logging in an easier process
+'''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    #if the user is autheticated the system will direct the user to the home page
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     
-
+    #we make a new login form object
     form = loginForm()
     if form.validate_on_submit():
         current_app.logger.info('Form submitted successfully')  # Add this line for debugging
