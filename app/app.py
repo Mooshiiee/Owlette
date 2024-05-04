@@ -165,12 +165,14 @@ def home():
                             current_user=current_user )
 
 @app.route('/myevents')
-#we use login required on pages like home and events so that users arent allowed to access these pages without logging in
 @login_required
 def myevents():
-    print(current_user.userid)
-    user_events = Event.query.filter_by(userID=current_user.userid).all() # Fetch events created by the current user by id
-    return render_template('myevents.html', events=user_events)
+    event_type = request.args.get('type', 'posted')  # Default to showing posted events
+    if event_type == 'posted':
+        events = Event.query.filter_by(userID=current_user.userid).all()
+    else:  # Assuming 'type' is 'rsvped'
+        events = Event.query.join(RSVP, RSVP.eventID == Event.eventID).filter(RSVP.userID == current_user.userid).all()
+    return render_template('myevents.html', events=events, event_type=event_type)
 
 
 #EVENT VIEW ROUTE
