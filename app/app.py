@@ -7,13 +7,14 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 '''
-    flask configurations and imports we use our forms, models, flask login, flask admin
+    This is the main file of the project. This file contains all view functions and backend logic
 '''
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'changeforprod'
 #setting our url to the db file
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///owlettedb.sqlite3'
+
 
 from models import db, User, Event, Flair, RSVP
 from flask import flash, url_for
@@ -218,10 +219,12 @@ def eventdetailview(eventID):
 @app.route('/event/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp_to_event(event_id):
-    print(f"Attempting to RSVP for user {current_user.userid} to event {event_id}")
+    #print(f"Attempting to RSVP for user {current_user.userid} to event {event_id}")
+    
+    #check for:
     existing_rsvp = RSVP.query.filter_by(userID=current_user.userid, eventID=event_id).first()
 
-    if existing_rsvp:
+    if existing_rsvp: #delete rsvp entry
         print(f"Found existing RSVP for event {event_id}, deleting")
         db.session.delete(existing_rsvp)
         try:
@@ -230,8 +233,8 @@ def rsvp_to_event(event_id):
         except Exception as e:
             db.session.rollback()
             flash('There was an issue removing your RSVP.', 'danger')
-    else:
-        print(f"No RSVP found for event {event_id}, creating new")
+    else: #create new rsvp entry
+        #print(f"No RSVP found for event {event_id}, creating new")
         new_rsvp = RSVP(userID=current_user.userid, eventID=event_id)
         db.session.add(new_rsvp)
         try:
@@ -241,7 +244,7 @@ def rsvp_to_event(event_id):
             db.session.rollback()
             flash('There was an issue recording your RSVP.', 'danger')
             print(f"Error: {str(e)}")
-    
+    #redirect
     return redirect(url_for('eventdetailview', eventID=event_id))
 
 
@@ -313,7 +316,7 @@ def editProfile():
         if request.method == 'POST' and form.validate_on_submit():
             user.bio = form.bio.data
             db.session.commit()
-
+            
             return redirect(url_for('home', userid=userid))
 
         return render_template('editProfile.html', form=form)

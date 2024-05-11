@@ -8,8 +8,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+'''
+File containing all the ORM models for SQLite3
+'''
 
-
+#MIGRATION INSTRUCTIONS 
 # > flask shell
 # >>>from app import db
 # >>>db.create_all()
@@ -76,10 +79,10 @@ class User(db.Model, UserMixin):
     def get_id(self):
             return (self.userid)
         
-    #ADD THESE LATER
+
     posts = db.relationship('Event', backref='author', lazy='dynamic')
     
-    #NOT NEEDED: if you need all the comments of the user, user query the Comment table with userID
+    #NOT NEEDED: if you need all the comments of the user -> query the Comment table with userID
     #comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __repr__(self):

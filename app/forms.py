@@ -2,7 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SelectMultipleField, IntegerField, SubmitField, DateTimeLocalField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length
 
-
+'''
+File containing all Form classes. Each class is derived from its respective model in models.py
+'''
 
 class loginForm(FlaskForm):
     # Assuming userID is the id of the user creating the event, it's not a form field
